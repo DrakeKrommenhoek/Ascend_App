@@ -1153,53 +1153,73 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
               {calView === 'month' && (
                 <CalendarGrid compact={false} onDayClick={setSelectedDay} />
               )}
-              {calView === 'day' && (
-                <div style={{
-                  backgroundColor: T.surface, borderRadius: '10px',
-                  border: `1px solid ${T.border}`,
-                  padding: '14px 16px',
-                  maxHeight: '340px', overflowY: 'auto',
-                }}>
-                  <p style={{
-                    fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
-                    fontSize: '0.7rem', color: T.navy,
-                    letterSpacing: '0.1em', textTransform: 'uppercase',
-                    margin: '0 0 10px 0',
+              {calView === 'day' && (() => {
+                const activeDay = selectedDay || TODAY
+                const activeDayData = (MARCH_EVENTS[activeDay] || []).filter(e => !e.isDeadline && e.duration > 0)
+                const activeDayDeadlines = (MARCH_EVENTS[activeDay] || []).filter(e => e.isDeadline)
+                if (!MARCH_EVENTS) {
+                  return <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: T.secondary, padding: '14px' }}>No events scheduled for this day yet.</div>
+                }
+                return (
+                  <div style={{
+                    backgroundColor: T.surface, borderRadius: '10px',
+                    border: `1px solid ${T.border}`,
+                    padding: '14px 16px',
+                    maxHeight: '340px', overflowY: 'auto',
                   }}>
-                    {selectedDay ? `March ${selectedDay}` : `March ${TODAY}`}
-                  </p>
-                  {(EVENTS[selectedDay || TODAY] || []).length === 0 ? (
-                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: T.secondary, margin: 0 }}>
-                      Nothing scheduled — a good day to get ahead.
+                    <p style={{
+                      fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
+                      fontSize: '0.7rem', color: T.navy,
+                      letterSpacing: '0.1em', textTransform: 'uppercase',
+                      margin: '0 0 10px 0',
+                    }}>
+                      March {activeDay}
                     </p>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      {(EVENTS[selectedDay || TODAY] || []).map((ev, i) => (
-                        <div key={i} style={{
-                          display: 'flex', alignItems: 'flex-start', gap: '10px',
-                          padding: '8px 10px',
-                          backgroundColor: T.bg, borderRadius: '7px',
-                          borderLeft: `3px solid ${ev.color || T.navy}`,
-                          minHeight: '36px',
-                        }}>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{
-                              fontFamily: 'DM Sans, sans-serif', fontWeight: 600,
-                              fontSize: '0.82rem', color: T.navy, margin: '0 0 2px 0',
-                              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                            }}>{ev.label}</p>
-                            {ev.time && (
-                              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: T.secondary, margin: 0 }}>
-                                {ev.time}
-                              </p>
-                            )}
+                    {activeDayDeadlines.length > 0 && (
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                        {activeDayDeadlines.map((d, i) => (
+                          <span key={i} style={{
+                            fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 600,
+                            color: CAT_COLOR[d.cat], backgroundColor: CAT_BG[d.cat],
+                            border: `1px solid ${CAT_COLOR[d.cat]}40`,
+                            borderRadius: '20px', padding: '4px 12px',
+                          }}>⏱ {d.label}</span>
+                        ))}
+                      </div>
+                    )}
+                    {activeDayData.length === 0 ? (
+                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: T.secondary, margin: 0 }}>
+                        Nothing scheduled — a good day to get ahead.
+                      </p>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {activeDayData.map((ev, i) => (
+                          <div key={i} style={{
+                            display: 'flex', alignItems: 'flex-start', gap: '10px',
+                            padding: '8px 10px',
+                            backgroundColor: T.bg, borderRadius: '7px',
+                            borderLeft: `3px solid ${CAT_COLOR[ev.cat] || T.navy}`,
+                            minHeight: '36px',
+                          }}>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <p style={{
+                                fontFamily: 'DM Sans, sans-serif', fontWeight: 600,
+                                fontSize: '0.82rem', color: T.navy, margin: '0 0 2px 0',
+                                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                              }}>{ev.label}</p>
+                              {ev.time && (
+                                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: T.secondary, margin: 0 }}>
+                                  {ev.time}
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
             </div>
 
             {/* ── PROGRESS SNAPSHOT ─────────────────────────────── */}

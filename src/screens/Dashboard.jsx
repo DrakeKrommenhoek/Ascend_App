@@ -27,7 +27,7 @@ const MARCH_GRID = [
 ]
 const DAY_LABELS    = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 const WEEKDAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-const TODAY = 13
+const TODAY = 17
 
 // Each event: { label, cat, time (HH:MM 24h), duration (min), isDeadline? }
 const MARCH_EVENTS = {
@@ -921,7 +921,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             color: T.secondary, margin: '4px 0 0 0', opacity: 0.65,
             letterSpacing: '0.02em',
           }}>
-            Week of March 13 · Game plan active
+            Week of March 17 · Game plan active
           </p>
         </div>
 

@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { ARCHETYPES } from '../data/archetypes.js'
 
 const HUMOR_OPTIONS = [
-  { id: 'straight', emoji: '🎯', label: 'Straight shooter',  sub: 'Just tell me what to do' },
+  { id: 'straight', emoji: '🎯', label: 'Straight shooter',  sub: 'Direct and no-nonsense' },
   { id: 'sarcastic', emoji: '😏', label: 'Sarcastic',         sub: 'I need a little roasting to stay motivated' },
-  { id: 'hype',     emoji: '🙌', label: 'Hype man',          sub: 'Keep the energy high' },
+  { id: 'hype',     emoji: '🙌', label: 'Hype man',          sub: 'Keep the energy dialed up' },
   { id: 'zen',      emoji: '🧘', label: 'Zen',               sub: 'Calm, steady, no pressure' },
 ]
 
@@ -88,7 +88,7 @@ export default function PetIntro({ archetypeId, name, onComplete }) {
               color: 'var(--text-secondary)',
               margin: '0 0 clamp(10px, 2vh, 16px) 0',
             }}>
-              One more thing, {name} — how do you want me to keep you on track?
+              Last thing, {name} — how hard should I push you this week?
             </p>
 
             <div style={{

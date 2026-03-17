@@ -1,7 +1,7 @@
 export const QUESTIONS = [
   {
     id: 'q1',
-    text: 'Where are you right now?',
+    text: 'How are you approaching this semester?',
     options: [
       { label: "I know exactly where I'm going and I'm building toward it" },
       { label: "I'm exploring — still mapping the territory" },
@@ -10,7 +10,7 @@ export const QUESTIONS = [
   },
   {
     id: 'q2',
-    text: "What's your target?",
+    text: "Where are you focusing your recruiting energy?",
     options: [
       { label: 'Investment Banking or Consulting' },
       { label: "Tech, startups, or something I'm still figuring out" },
@@ -19,7 +19,7 @@ export const QUESTIONS = [
   },
   {
     id: 'q3',
-    text: 'When things get overwhelming, what actually helps?',
+    text: 'When priorities stack up, what\'s your instinct?',
     options: [
       { label: 'A hard reminder that I have a plan and need to execute it' },
       { label: 'Someone pointing me toward a smarter path' },
@@ -28,7 +28,7 @@ export const QUESTIONS = [
   },
   {
     id: 'q4',
-    text: 'Pick your vibe:',
+    text: 'Which best describes how you move?',
     options: [
       { label: "I move when the timing is right, not when I'm scared" },
       { label: "I find the angle nobody else saw" },

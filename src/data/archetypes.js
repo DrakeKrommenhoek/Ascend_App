@@ -11,6 +11,11 @@ export const ARCHETYPES = {
     description: "You know exactly where you're going. Ascend helps you build the bridge between ambition and execution — tracking every recruiting milestone so nothing falls through the cracks.",
     petIntroMessage: (name) =>
       `Good. You know what you want, ${name}. I'm here to make sure you don't waste the window. Let's not overthink this — open your dashboard and show me what you're working with.`,
+    weeklyStrategy: [
+      'Lock your prep blocks now. No exceptions.',
+      'One recruiting action per day — pick the highest-leverage one.',
+      'Confirm every deadline before Thursday.',
+    ],
   },
   fox: {
     id: 'fox',
@@ -24,6 +29,11 @@ export const ARCHETYPES = {
     description: 'You are building the map as you go — and that takes real courage. Ascend helps you stay curious without losing momentum, surfacing the right opportunities at the right time.',
     petIntroMessage: (name) =>
       `Nice to meet you, ${name}. I've already spotted three paths you haven't considered yet. Come see your dashboard — things are about to get interesting.`,
+    weeklyStrategy: [
+      'Find the angle others are ignoring this week.',
+      'Run one new outreach before Friday. Just one.',
+      'Map your options before you narrow anything down.',
+    ],
   },
   bear: {
     id: 'bear',
@@ -37,6 +47,11 @@ export const ARCHETYPES = {
     description: 'You are juggling a lot — and you are doing it. Ascend brings structure to the chaos, turning your scattered commitments into a unified command center.',
     petIntroMessage: (name) =>
       `Hey ${name}. No speech needed. You already know what to do. Let's just make sure you do it. Your dashboard is ready.`,
+    weeklyStrategy: [
+      "Block deep work time first — protect it.",
+      "Don't add to the list. Finish what's already on it.",
+      'Show up for the reps, especially when you don\'t feel like it.',
+    ],
   },
 }
 

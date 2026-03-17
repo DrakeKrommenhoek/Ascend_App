@@ -485,26 +485,15 @@ export default function Intro({ onComplete, onSkipToDemo }) {
               <p style={{
                 marginTop: '18px',
                 fontFamily: 'DM Sans, sans-serif',
-                fontWeight: 300,
+                fontWeight: 400,
                 fontSize: '1.05rem',
                 color: '#1B3A6B',
-                letterSpacing: '0.04em',
+                letterSpacing: '0.02em',
                 animation: 'fade-in 400ms ease-out forwards',
                 opacity: 0,
                 margin: '18px 0 0',
               }}>
-                Clarity for your climb.
-              </p>
-              <p style={{
-                fontFamily: 'DM Sans, sans-serif',
-                fontWeight: 400,
-                fontSize: '0.92rem',
-                color: '#555',
-                letterSpacing: '0.02em',
-                margin: '6px 0 0',
-                animation: 'fade-in 400ms ease-out forwards',
-              }}>
-                All your commitments, one interface.
+                Classes. Recruiting. Life. Finally in one place.
               </p>
               <p style={{
                 fontFamily: 'DM Sans, sans-serif',

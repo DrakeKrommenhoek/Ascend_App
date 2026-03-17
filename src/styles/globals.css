@@ -107,6 +107,16 @@ body {
   to   { transform: translateY(0);    }
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes progress-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
 /* ===========================
    SEQUENCED CONTENT
    =========================== */

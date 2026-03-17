@@ -107,11 +107,46 @@ export default function Reveal({ archetypeId, name, onComplete }) {
               color: 'var(--text-primary)',
               lineHeight: 1.72,
               opacity: 0.85,
-              margin: '0 0 2.5rem 0',
+              margin: '0 0 1.5rem 0',
               animation: 'fade-in 500ms ease-out 200ms both',
             }}>
               {archetype.description}
             </p>
+
+            {/* Weekly strategy — compact, 3 bullets */}
+            {archetype.weeklyStrategy && (
+              <div style={{
+                borderLeft: `2px solid ${archetype.color}`,
+                paddingLeft: '14px',
+                margin: '0 0 2rem 0',
+                animation: 'fade-in 500ms ease-out 350ms both',
+              }}>
+                <p style={{
+                  fontFamily: 'DM Sans, sans-serif',
+                  fontWeight: 700,
+                  fontSize: '0.62rem',
+                  color: archetype.color,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  margin: '0 0 8px 0',
+                }}>
+                  Your strategy this week
+                </p>
+                {archetype.weeklyStrategy.map((bullet, i) => (
+                  <p key={i} style={{
+                    fontFamily: 'DM Sans, sans-serif',
+                    fontWeight: 400,
+                    fontSize: 'clamp(0.8rem, 1.4vw, 0.9rem)',
+                    color: 'var(--text-primary)',
+                    opacity: 0.82,
+                    lineHeight: 1.5,
+                    margin: i < archetype.weeklyStrategy.length - 1 ? '0 0 4px 0' : 0,
+                  }}>
+                    {bullet}
+                  </p>
+                ))}
+              </div>
+            )}
 
             <button
               onClick={onComplete}

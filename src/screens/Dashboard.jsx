@@ -130,12 +130,13 @@ const CONFLICT_MSG = {
   20: "Heads up — Wells Fargo deadline Sunday and ECON midterm are both this week. Your best prep window is Tuesday night.",
 }
 
-const COMMAND_CENTER_ITEMS = [
-  { priority: 'red',    label: 'Harris Williams Superday',    detail: 'Wed Mar 18 · 11am'    },
-  { priority: 'red',    label: 'ECON 301 midterm',            detail: 'Fri Mar 20 · 9am'     },
-  { priority: 'yellow', label: 'Wells Fargo app deadline',    detail: 'Sun Mar 22 · 11:59pm' },
-  { priority: 'yellow', label: 'ECON 301 problem set due',    detail: 'Wed Mar 18 · 11:59pm' },
-  { priority: 'green',  label: 'Get tux for Fancy Dress',     detail: 'Sat Mar 21 · 11am'    },
+const GAME_PLAN_ITEMS_BASE = [
+  { priority: 'red',    label: 'Harris Williams Superday',    detail: 'Wed Mar 18 · 11am',    cat: 'recruiting' },
+  { priority: 'red',    label: 'ECON 301 midterm',            detail: 'Fri Mar 20 · 9am',     cat: 'academic'   },
+  { priority: 'yellow', label: 'Wells Fargo app deadline',    detail: 'Sun Mar 22 · 11:59pm', cat: 'recruiting' },
+  { priority: 'yellow', label: 'ECON 301 problem set due',    detail: 'Wed Mar 18 · 11:59pm', cat: 'academic'   },
+  { priority: 'green',  label: 'Get tux for Fancy Dress',     detail: 'Sat Mar 21 · 11am',    cat: 'personal'   },
+  { priority: 'green',  label: 'CPD Office Hours',            detail: 'Today · 2pm',           cat: 'recruiting' },
 ]
 const PRIORITY_COLOR = { red: '#E84545', yellow: '#D97706', green: '#1DAF72' }
 const PRIORITY_BG    = { red: '#FEF2F2', yellow: '#FFFBEB', green: '#F0FDF4' }
@@ -164,12 +165,12 @@ const NETWORKING_CONTACTS = [
   { name: 'Alumni (Coffee Chat)',     company: 'TBD',           role: 'TBD',           dateMet: 'Today',  status: 'Not yet contacted 🔴',  statusColor: '#E84545' },
 ]
 const PERSONAL_TASKS = [
-  'Gym Session',
-  'Grocery Shopping',
-  'Call Mom',
-  'Pay Bills',
-  'Schedule Dentist Appointment',
-  'Go get tux for Fancy Dress',
+  { label: 'Gym Session',                 today: true  },
+  { label: 'Call Mom',                    today: true  },
+  { label: 'Go get tux for Fancy Dress',  today: false },
+  { label: 'Grocery Shopping',            today: false },
+  { label: 'Pay Bills',                   today: false },
+  { label: 'Schedule Dentist Appointment', today: false },
 ]
 const STREAK = 12
 const XP_PER_TASK = 10
@@ -393,10 +394,10 @@ function DayDetailPanel({ day, name, onClose }) {
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                   {deadlines.map((d, i) => (
                     <span key={i} style={{
-                      fontFamily: 'DM Sans, sans-serif', fontSize: '0.66rem', fontWeight: 500,
+                      fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 600,
                       color: CAT_COLOR[d.cat], backgroundColor: CAT_BG[d.cat],
                       border: `1px solid ${CAT_COLOR[d.cat]}40`,
-                      borderRadius: '20px', padding: '2px 10px',
+                      borderRadius: '20px', padding: '4px 12px',
                     }}>
                       ⏱ {d.label}
                     </span>
@@ -415,6 +416,24 @@ function DayDetailPanel({ day, name, onClose }) {
 
         {/* Timeline */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 28px' }}>
+
+          {/* Best use of your day chip */}
+          <div style={{ marginBottom: '10px' }}>
+            <span style={{
+              fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', fontWeight: 600,
+              color: T.navy, backgroundColor: `${T.navy}0D`,
+              border: `1px solid ${T.navy}22`,
+              borderRadius: '20px', padding: '4px 12px',
+              display: 'inline-block',
+            }}>
+              {timedEvents.length === 0
+                ? '🧠 Best use of your day: deep work block'
+                : timedEvents.length >= 4
+                  ? '⚡ Busy day — protect your prep time'
+                  : '✅ Best use of your day: stay ahead on recruiting'}
+            </span>
+          </div>
+
           <div style={{ display: 'flex' }}>
 
             {/* Hour labels */}
@@ -423,7 +442,7 @@ function DayDetailPanel({ day, name, onClose }) {
                 <div key={h} style={{
                   height: `${ROW_H}px`,
                   display: 'flex', alignItems: 'flex-start', paddingTop: '4px',
-                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', color: T.secondary,
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: T.secondary,
                   justifyContent: 'flex-end', paddingRight: '8px',
                 }}>
                   {formatHour(h)}
@@ -451,7 +470,7 @@ function DayDetailPanel({ day, name, onClose }) {
               {timedEvents.map((ev, i) => {
                 const startMin = toMin(ev.time)
                 const top    = ((startMin - TIMELINE_START) / 60) * ROW_H
-                const height = Math.max((ev.duration / 60) * ROW_H, 26)
+                const height = Math.max((ev.duration / 60) * ROW_H, 36)
                 if (top < 0 || top > 14 * ROW_H) return null
                 const [h, m] = ev.time.split(':').map(Number)
                 const disp = `${h > 12 ? h - 12 : h === 0 ? 12 : h}:${String(m).padStart(2,'0')}${h < 12 ? 'am' : 'pm'}`
@@ -467,14 +486,14 @@ function DayDetailPanel({ day, name, onClose }) {
                     boxShadow: `0 1px 3px ${CAT_COLOR[ev.cat]}22`,
                   }}>
                     <p style={{
-                      fontFamily: 'DM Sans, sans-serif', fontSize: '0.74rem', fontWeight: 500,
+                      fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', fontWeight: 500,
                       color: CAT_COLOR[ev.cat], margin: 0, lineHeight: 1.2,
                       whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     }}>
                       {ev.label}
                     </p>
                     {height > 34 && (
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', color: T.secondary, margin: '1px 0 0 0' }}>
+                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: T.secondary, margin: '1px 0 0 0' }}>
                         {disp} · {ev.duration}m
                       </p>
                     )}
@@ -514,6 +533,127 @@ function DayDetailPanel({ day, name, onClose }) {
             <WhatWouldYouCut events={timedEvents} name={name} />
           )}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Week View ─────────────────────────────────────────────────────────────────
+const DEMO_WEEK      = [13, 14, 15, 16, 17, 18, 19]
+const DEMO_WEEK_DAYS = ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed']
+
+function WeekView({ onDayClick }) {
+  return (
+    <div>
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        marginBottom: '8px',
+      }}>
+        <p style={{
+          fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
+          fontSize: '0.82rem', color: T.navy, margin: 0, letterSpacing: '0.08em',
+        }}>
+          MARCH 13 – 19, 2026
+        </p>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {Object.entries(CAT_COLOR).map(([cat, color]) => (
+            <span key={cat} style={{
+              fontFamily: 'DM Sans, sans-serif', fontSize: '0.62rem', color: T.secondary,
+              display: 'flex', alignItems: 'center', gap: '4px',
+            }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: color, display: 'inline-block' }} />
+              {cat}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+        {DEMO_WEEK.map((day, idx) => {
+          const events   = MARCH_EVENTS[day] || []
+          const isToday  = day === TODAY
+          const deadlines = events.filter(e => e.isDeadline)
+          const timed    = events.filter(e => !e.isDeadline)
+          const shown    = timed.slice(0, 3)
+          const overflow = timed.length - shown.length + deadlines.length
+          return (
+            <div
+              key={day}
+              onClick={() => onDayClick(day)}
+              style={{
+                borderRadius: '8px',
+                backgroundColor: isToday ? '#EEF4FF' : T.surface,
+                border: `1px solid ${isToday ? '#BFDBFE' : T.border}`,
+                padding: '6px 5px',
+                cursor: 'pointer',
+                minHeight: '110px',
+                display: 'flex', flexDirection: 'column', gap: '3px',
+                transition: 'background-color 120ms ease',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = isToday ? '#DBEAFE' : '#EAECF0' }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = isToday ? '#EEF4FF' : T.surface }}
+            >
+              {/* Day header */}
+              <div style={{ marginBottom: '4px' }}>
+                <p style={{
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem',
+                  color: isToday ? '#1D4ED8' : T.secondary,
+                  letterSpacing: '0.06em', margin: 0, textTransform: 'uppercase',
+                }}>
+                  {DEMO_WEEK_DAYS[idx]}
+                </p>
+                <p style={{
+                  fontFamily: isToday ? 'Playfair Display, serif' : 'DM Sans, sans-serif',
+                  fontWeight: isToday ? 700 : 500,
+                  fontSize: isToday ? '1.05rem' : '0.88rem',
+                  color: isToday ? '#1D4ED8' : T.navy,
+                  margin: 0, lineHeight: 1,
+                }}>
+                  {day}
+                </p>
+              </div>
+
+              {/* Event pills */}
+              {shown.map((ev, ei) => (
+                <div key={ei} style={{
+                  fontSize: '0.58rem',
+                  fontFamily: 'DM Sans, sans-serif', fontWeight: 600,
+                  color: CAT_COLOR[ev.cat],
+                  backgroundColor: CAT_BG[ev.cat],
+                  borderRadius: '3px', padding: '2px 4px',
+                  lineHeight: 1.3,
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                }}>
+                  {ev.label}
+                </div>
+              ))}
+
+              {/* Deadline badges */}
+              {deadlines.slice(0, 1).map((d, di) => (
+                <div key={`d-${di}`} style={{
+                  fontSize: '0.58rem',
+                  fontFamily: 'DM Sans, sans-serif', fontWeight: 600,
+                  color: CAT_COLOR[d.cat],
+                  backgroundColor: CAT_BG[d.cat],
+                  borderRadius: '3px', padding: '2px 4px',
+                  lineHeight: 1.3,
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                }}>
+                  ⏱ {d.label}
+                </div>
+              ))}
+
+              {overflow > 0 && (
+                <p style={{
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.55rem',
+                  color: T.secondary, margin: 0,
+                }}>
+                  +{overflow} more
+                </p>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -687,8 +827,10 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
   const archetype = ARCHETYPES[archetypeId] || ARCHETYPES.eagle
 
   const [activeTab,      setActiveTab]      = useState('master')
-  const [showCC,         setShowCC]         = useState(false)
+  const [calView,        setCalView]        = useState('week')
   const [selectedDay,    setSelectedDay]    = useState(null)
+  const [syllabusState,  setSyllabusState]  = useState('idle')
+  const [extraGamePlan,  setExtraGamePlan]  = useState([])
   const [personalDone,   setPersonalDone]   = useState({})
   const [xp,             setXp]             = useState(0)
   const [showPetModal,   setShowPetModal]   = useState(false)
@@ -766,7 +908,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             fontFamily: 'DM Sans, sans-serif', fontWeight: 300,
             fontSize: 'clamp(0.78rem, 1.4vw, 0.95rem)', color: T.secondary, margin: 0,
           }}>
-            Good {timeGreeting},
+            Here's your week,
           </p>
           <p style={{
             fontFamily: 'Playfair Display, serif', fontWeight: 600,
@@ -776,10 +918,10 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
           </p>
           <p style={{
             fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem',
-            color: T.secondary, margin: '4px 0 0 0', opacity: 0.7,
-            cursor: 'pointer', letterSpacing: '0.02em',
+            color: T.secondary, margin: '4px 0 0 0', opacity: 0.65,
+            letterSpacing: '0.02em',
           }}>
-            Upgrade to Pro ↗
+            Week of March 13 · Game plan active
           </p>
         </div>
 
@@ -836,7 +978,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
       }}>
         {TABS.map(tab => (
           <button key={tab}
-            onClick={() => { setActiveTab(tab); setShowCC(false) }}
+            onClick={() => setActiveTab(tab)}
             style={{
               background: 'none', border: 'none',
               borderBottom: activeTab === tab ? `2px solid ${T.navy}` : '2px solid transparent',
@@ -890,142 +1032,214 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             display: 'flex', flexDirection: 'column', gap: '12px',
           }}>
 
-            {/* Recruiting awareness banner */}
+            {/* ── GAME PLAN (always visible, top priority) ──────── */}
             <div style={{
               flexShrink: 0,
-              display: 'flex', alignItems: 'flex-start', gap: '10px',
-              padding: '10px 14px',
-              backgroundColor: T.navy, borderRadius: '8px',
+              backgroundColor: T.surface, borderRadius: '10px',
+              border: `1px solid ${T.border}`,
+              padding: 'clamp(12px, 2vh, 16px) clamp(14px, 2.5vw, 20px)',
             }}>
-              <span style={{ fontSize: '0.9rem', flexShrink: 0, marginTop: '1px' }}>🕐</span>
               <p style={{
-                fontFamily: 'DM Sans, sans-serif', fontSize: '0.76rem',
-                color: 'rgba(255,255,255,0.88)', margin: 0, lineHeight: 1.55,
+                fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
+                fontSize: '0.66rem', color: T.navy,
+                letterSpacing: '0.14em', textTransform: 'uppercase',
+                margin: '0 0 2px 0',
               }}>
-                <strong style={{ color: 'white' }}>BB cycles wrapped in January.</strong> Middle market is live — Harris Williams and Houlihan Lokey superdays are this month. Wells Fargo and Baird first rounds close March 22. A few regional boutiques are still accepting apps.
+                Your Game Plan
+              </p>
+              <p style={{
+                fontFamily: 'DM Sans, sans-serif', fontWeight: 300,
+                fontSize: '0.72rem', color: T.secondary,
+                margin: '0 0 12px 0', lineHeight: 1.4,
+              }}>
+                Your academics, recruiting, and life — coordinated into one weekly plan.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {[...GAME_PLAN_ITEMS_BASE, ...extraGamePlan].map((item, i) => (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'center', gap: '0',
+                    backgroundColor: PRIORITY_BG[item.priority],
+                    borderRadius: '7px',
+                    border: `1px solid ${PRIORITY_COLOR[item.priority]}25`,
+                    overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      width: '3px', alignSelf: 'stretch', flexShrink: 0,
+                      backgroundColor: PRIORITY_COLOR[item.priority],
+                    }} />
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px' }}>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 'clamp(0.8rem, 1.45vw, 0.9rem)', color: T.navy, margin: '0 0 1px 0', fontWeight: 500 }}>{item.label}</p>
+                        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.66rem', color: T.secondary, margin: 0 }}>{item.detail}</p>
+                      </div>
+                      {item.isNew && (
+                        <span style={{
+                          fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem', fontWeight: 700,
+                          backgroundColor: CAT_COLOR.academic, color: 'white',
+                          borderRadius: '4px', padding: '2px 6px', flexShrink: 0,
+                        }}>New</span>
+                      )}
+                      <span style={{
+                        width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0,
+                        backgroundColor: CAT_COLOR[item.cat] || T.secondary,
+                      }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── RECRUITING SIGNAL STRIP ───────────────────────── */}
+            <div style={{
+              flexShrink: 0,
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '8px 14px',
+              backgroundColor: `${T.navy}08`,
+              borderRadius: '7px',
+              border: `1px solid ${T.border}`,
+            }}>
+              <span style={{ fontSize: '0.8rem', flexShrink: 0 }}>⚡</span>
+              <p style={{
+                fontFamily: 'DM Sans, sans-serif', fontSize: '0.73rem',
+                color: T.navy, margin: 0, lineHeight: 1.4,
+              }}>
+                <strong>4 active processes this month</strong> · Next: Harris Williams Superday Wed 11am
               </p>
             </div>
 
-            {/* Calendar */}
-            <div style={{
-              flexShrink: 0,
-              flex: showCC ? '0 0 auto' : undefined,
-              maxHeight: showCC ? '90px' : undefined,
-              overflow: showCC ? 'hidden' : 'visible',
-              transition: 'max-height 350ms ease',
-            }}>
-              <CalendarGrid compact={showCC} onDayClick={setSelectedDay} />
+            {/* ── CALENDAR ──────────────────────────────────────── */}
+            <div style={{ flexShrink: 0 }}>
+              {/* Segmented toggle */}
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '10px',
+              }}>
+                <div style={{
+                  display: 'inline-flex',
+                  backgroundColor: T.surface,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: '8px',
+                  padding: '3px',
+                  gap: '2px',
+                }}>
+                  {['Day', 'Week', 'Month'].map(v => (
+                    <button key={v}
+                      onClick={() => {
+                        const next = v.toLowerCase()
+                        setCalView(next)
+                        if (next === 'day' && !selectedDay) setSelectedDay(TODAY)
+                      }}
+                      style={{
+                        background: calView === v.toLowerCase() ? T.navy : 'transparent',
+                        color: calView === v.toLowerCase() ? 'white' : T.secondary,
+                        border: 'none', borderRadius: '5px',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: 600, fontSize: '0.72rem',
+                        padding: '5px 14px', cursor: 'pointer',
+                        transition: 'background 150ms ease, color 150ms ease',
+                        letterSpacing: '0.03em',
+                      }}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Views */}
+              {calView === 'week' && (
+                <WeekView onDayClick={(d) => { setSelectedDay(d); }} />
+              )}
+              {calView === 'month' && (
+                <CalendarGrid compact={false} onDayClick={setSelectedDay} />
+              )}
+              {calView === 'day' && (
+                <div style={{
+                  backgroundColor: T.surface, borderRadius: '10px',
+                  border: `1px solid ${T.border}`,
+                  padding: '14px 16px',
+                  maxHeight: '340px', overflowY: 'auto',
+                }}>
+                  <p style={{
+                    fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
+                    fontSize: '0.7rem', color: T.navy,
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                    margin: '0 0 10px 0',
+                  }}>
+                    {selectedDay ? `March ${selectedDay}` : `March ${TODAY}`}
+                  </p>
+                  {(EVENTS[selectedDay || TODAY] || []).length === 0 ? (
+                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: T.secondary, margin: 0 }}>
+                      Nothing scheduled — a good day to get ahead.
+                    </p>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {(EVENTS[selectedDay || TODAY] || []).map((ev, i) => (
+                        <div key={i} style={{
+                          display: 'flex', alignItems: 'flex-start', gap: '10px',
+                          padding: '8px 10px',
+                          backgroundColor: T.bg, borderRadius: '7px',
+                          borderLeft: `3px solid ${ev.color || T.navy}`,
+                          minHeight: '36px',
+                        }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{
+                              fontFamily: 'DM Sans, sans-serif', fontWeight: 600,
+                              fontSize: '0.82rem', color: T.navy, margin: '0 0 2px 0',
+                              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                            }}>{ev.label}</p>
+                            {ev.time && (
+                              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: T.secondary, margin: 0 }}>
+                                {ev.time}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* Week Ahead */}
-            {!showCC && (
-              <div style={{
-                flexShrink: 0,
-                backgroundColor: T.surface, borderRadius: '10px',
-                border: `1px solid ${T.border}`,
-                padding: 'clamp(12px, 2vh, 16px) clamp(14px, 2.5vw, 20px)',
+            {/* ── PROGRESS SNAPSHOT ─────────────────────────────── */}
+            <div style={{
+              flexShrink: 0,
+              backgroundColor: T.surface, borderRadius: '10px',
+              border: `1px solid ${T.border}`,
+              padding: 'clamp(12px, 2vh, 16px) clamp(14px, 2.5vw, 20px)',
+            }}>
+              <p style={{
+                fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
+                fontSize: '0.7rem', color: T.navy,
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                margin: '0 0 10px 0',
               }}>
+                Your momentum, {name}.
+              </p>
+              <div style={{ display: 'flex', gap: 'clamp(16px, 4vw, 32px)', marginBottom: '10px' }}>
+                {[
+                  { label: 'Last week', value: '4 of 7', sub: 'tasks completed' },
+                  { label: 'This week',  value: '6 of 7', sub: 'on track' },
+                ].map((stat, i) => (
+                  <div key={i}>
+                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', color: T.secondary, margin: '0 0 2px 0', letterSpacing: '0.06em' }}>{stat.label}</p>
+                    <p style={{ fontFamily: 'Playfair Display, serif', fontWeight: 600, fontSize: 'clamp(1rem, 2vw, 1.2rem)', color: T.navy, margin: '0 0 1px 0' }}>{stat.value}</p>
+                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.62rem', color: T.secondary, margin: 0 }}>{stat.sub}</p>
+                  </div>
+                ))}
+              </div>
+              {progressMsg && (
                 <p style={{
                   fontFamily: 'Playfair Display, serif', fontStyle: 'italic',
-                  fontWeight: 400, fontSize: 'clamp(0.82rem, 1.4vw, 0.94rem)',
-                  color: T.secondary, margin: '0 0 10px 0',
+                  fontWeight: 400, fontSize: 'clamp(0.78rem, 1.4vw, 0.9rem)',
+                  color: T.secondary, margin: 0, lineHeight: 1.55,
+                  borderTop: `1px solid ${T.border}`, paddingTop: '8px',
                 }}>
-                  Your week, {name}. Here's what matters.
+                  "{progressMsg}"
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {[
-                    { dot: CAT_COLOR.academic,   text: 'ECON 301 midterm Friday 9am — start review tonight' },
-                    { dot: CAT_COLOR.recruiting, text: 'Harris Williams Superday Wednesday 11am — your biggest window this month' },
-                    { dot: CAT_COLOR.recruiting, text: 'Wells Fargo first round deadline Sunday 11:59pm — submit before Saturday' },
-                    { dot: CAT_COLOR.personal,   text: "Get tux Saturday before Fancy Dress — no one's covering for you" },
-                  ].map((item, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: item.dot, flexShrink: 0, marginTop: '4px' }} />
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 'clamp(0.78rem, 1.35vw, 0.88rem)', color: T.navy, opacity: 0.85, margin: 0, lineHeight: 1.45 }}>
-                        {item.text}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Command Center panel */}
-            {showCC && (
-              <div style={{
-                flex: 1,
-                backgroundColor: T.surface, borderRadius: '10px',
-                border: `1px solid ${T.border}`,
-                padding: 'clamp(12px, 2vh, 16px) clamp(14px, 2.5vw, 20px)',
-                overflow: 'auto',
-                animation: 'slide-up-fade 300ms ease-out forwards',
-              }}>
-                <p style={{
-                  fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '0.7rem', color: T.navy,
-                  letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 12px 0',
-                }}>
-                  ⚡ Command Center
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                  {COMMAND_CENTER_ITEMS.map((item, i) => (
-                    <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: '12px',
-                      padding: '10px 14px',
-                      backgroundColor: PRIORITY_BG[item.priority],
-                      borderRadius: '7px',
-                      border: `1px solid ${PRIORITY_COLOR[item.priority]}30`,
-                    }}>
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: PRIORITY_COLOR[item.priority], flexShrink: 0 }} />
-                      <div style={{ flex: 1 }}>
-                        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 'clamp(0.8rem, 1.45vw, 0.9rem)', color: T.navy, margin: '0 0 2px 0', fontWeight: 500 }}>{item.label}</p>
-                        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.67rem', color: T.secondary, margin: 0 }}>{item.detail}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Progress snapshot */}
-            {!showCC && (
-              <div style={{
-                flexShrink: 0,
-                backgroundColor: T.surface, borderRadius: '10px',
-                border: `1px solid ${T.border}`,
-                padding: 'clamp(12px, 2vh, 16px) clamp(14px, 2.5vw, 20px)',
-              }}>
-                <p style={{
-                  fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
-                  fontSize: '0.7rem', color: T.navy,
-                  letterSpacing: '0.1em', textTransform: 'uppercase',
-                  margin: '0 0 10px 0',
-                }}>
-                  Your momentum, {name}.
-                </p>
-                <div style={{ display: 'flex', gap: 'clamp(16px, 4vw, 32px)', marginBottom: '10px' }}>
-                  {[
-                    { label: 'Last week', value: '4 of 7', sub: 'tasks completed' },
-                    { label: 'This week',  value: '6 of 7', sub: 'on track' },
-                  ].map((stat, i) => (
-                    <div key={i}>
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', color: T.secondary, margin: '0 0 2px 0', letterSpacing: '0.06em' }}>{stat.label}</p>
-                      <p style={{ fontFamily: 'Playfair Display, serif', fontWeight: 600, fontSize: 'clamp(1rem, 2vw, 1.2rem)', color: T.navy, margin: '0 0 1px 0' }}>{stat.value}</p>
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.62rem', color: T.secondary, margin: 0 }}>{stat.sub}</p>
-                    </div>
-                  ))}
-                </div>
-                {progressMsg && (
-                  <p style={{
-                    fontFamily: 'Playfair Display, serif', fontStyle: 'italic',
-                    fontWeight: 400, fontSize: 'clamp(0.78rem, 1.4vw, 0.9rem)',
-                    color: T.secondary, margin: 0, lineHeight: 1.55,
-                    borderTop: `1px solid ${T.border}`, paddingTop: '8px',
-                  }}>
-                    "{progressMsg}"
-                  </p>
-                )}
-              </div>
-            )}
+              )}
+            </div>
 
             {/* B2B footer */}
             <p style={{
@@ -1036,29 +1250,6 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             }}>
               Built for career centers. Inquire at ascend.app/partners
             </p>
-
-            {/* Floating CC button */}
-            <button
-              onClick={() => setShowCC(v => !v)}
-              style={{
-                position: 'sticky', bottom: '12px',
-                alignSelf: 'flex-end',
-                padding: '8px 18px',
-                backgroundColor: showCC ? T.surface : T.navy,
-                border: `1px solid ${showCC ? T.borderMid : T.navy}`,
-                borderRadius: '20px',
-                fontFamily: 'DM Sans, sans-serif', fontWeight: 500, fontSize: '0.76rem',
-                color: showCC ? T.secondary : 'white',
-                cursor: 'pointer',
-                transition: 'background-color 150ms ease, color 150ms ease',
-                boxShadow: showCC ? 'none' : '0 2px 8px rgba(27,58,107,0.18)',
-                zIndex: 10,
-              }}
-              onMouseEnter={e => { if (!showCC) e.currentTarget.style.backgroundColor = T.navyLight }}
-              onMouseLeave={e => { if (!showCC) e.currentTarget.style.backgroundColor = T.navy }}
-            >
-              {showCC ? '✕ Close' : '⚡ Command Center'}
-            </button>
           </div>
         )}
 
@@ -1085,10 +1276,125 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 ))}
               </div>
             </div>
+            {/* ── SYLLABUS UPLOAD ────────────────────────────── */}
+            {syllabusState === 'idle' && (
+              <div style={{
+                border: `1.5px dashed ${T.border}`,
+                borderRadius: '10px', padding: '18px 20px',
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                gap: '8px', cursor: 'pointer', backgroundColor: T.surface,
+                transition: 'border-color 150ms ease',
+              }}
+                onClick={() => {
+                  setSyllabusState('uploading')
+                  setTimeout(() => setSyllabusState('parsing'), 800)
+                  setTimeout(() => setSyllabusState('results'), 2000)
+                }}
+              >
+                <span style={{ fontSize: '1.6rem' }}>📄</span>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '0.9rem', color: T.navy, margin: 0, textAlign: 'center' }}>
+                  Upload Syllabus
+                </p>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem', color: T.secondary, margin: 0, textAlign: 'center', lineHeight: 1.5 }}>
+                  Upload a syllabus PDF and Ascend extracts every deadline automatically.
+                </p>
+              </div>
+            )}
+            {syllabusState === 'uploading' && (
+              <div style={{ backgroundColor: T.surface, borderRadius: '10px', border: `1px solid ${T.border}`, padding: '18px 20px' }}>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: T.navy, margin: '0 0 10px 0', fontWeight: 600 }}>
+                  Uploading FIN 401 syllabus...
+                </p>
+                <div style={{ height: '6px', backgroundColor: T.border, borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%', backgroundColor: T.navy,
+                    borderRadius: '3px', width: '70%',
+                    animation: 'progress-fill 800ms ease-out forwards',
+                  }} />
+                </div>
+              </div>
+            )}
+            {syllabusState === 'parsing' && (
+              <div style={{
+                backgroundColor: T.surface, borderRadius: '10px', border: `1px solid ${T.border}`,
+                padding: '18px 20px', display: 'flex', alignItems: 'center', gap: '12px',
+              }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%',
+                  border: `2.5px solid ${T.navy}`, borderTopColor: 'transparent',
+                  flexShrink: 0,
+                  animation: 'spin 700ms linear infinite',
+                }} />
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: T.navy, margin: 0 }}>
+                  Extracting assignments from FIN 401 syllabus...
+                </p>
+              </div>
+            )}
+            {syllabusState === 'results' && (
+              <div style={{ backgroundColor: T.surface, borderRadius: '10px', border: `1px solid ${T.border}`, padding: '16px 18px' }}>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '0.75rem', color: T.navy, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 10px 0' }}>
+                  Found in FIN 401 Syllabus
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
+                  {[
+                    { course: 'FIN 401', title: 'DCF Analysis Assignment', due: 'Mar 28' },
+                    { course: 'FIN 401', title: 'Midterm Exam',            due: 'Apr 4'  },
+                    { course: 'FIN 401', title: 'Case Study Presentation', due: 'Apr 18' },
+                    { course: 'FIN 401', title: 'Final Paper',             due: 'May 2'  },
+                  ].map((a, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      padding: '8px 12px', backgroundColor: T.bg,
+                      borderRadius: '7px', border: `1px solid ${T.border}`,
+                      borderLeft: `3px solid ${CAT_COLOR.academic}`,
+                    }}>
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 600, color: CAT_COLOR.academic, minWidth: '52px', flexShrink: 0 }}>{a.course}</span>
+                      <span style={{ flex: 1, fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: T.navy }}>{a.title}</span>
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: T.secondary, flexShrink: 0 }}>Due {a.due}</span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => {
+                    setSyllabusState('added')
+                    setExtraGamePlan(prev => [
+                      ...prev,
+                      { priority: 'yellow', label: 'FIN 401 DCF Analysis Assignment', detail: 'Due Mar 28', cat: 'academic', isNew: true },
+                    ])
+                  }}
+                  style={{
+                    width: '100%', padding: '10px', borderRadius: '8px',
+                    backgroundColor: T.navy, color: 'white', border: 'none',
+                    fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '0.82rem',
+                    cursor: 'pointer', letterSpacing: '0.03em',
+                  }}
+                >
+                  Add All to Ascend
+                </button>
+              </div>
+            )}
+            {syllabusState === 'added' && (
+              <div style={{
+                backgroundColor: '#F0FDF4', borderRadius: '10px',
+                border: '1px solid #BBF7D0', padding: '12px 16px',
+                display: 'flex', alignItems: 'center', gap: '10px',
+              }}>
+                <span style={{ fontSize: '1rem' }}>✅</span>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#15803D', margin: 0, fontWeight: 600 }}>
+                  4 FIN 401 deadlines added to your calendar and game plan.
+                </p>
+              </div>
+            )}
+
             <div>
               <Label>Upcoming Assignments</Label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                {CANVAS_ASSIGNMENTS.map((a, i) => (
+                {[...CANVAS_ASSIGNMENTS, ...(syllabusState === 'added' ? [
+                  { course: 'FIN 401', title: 'DCF Analysis Assignment', due: 'Mar 28' },
+                  { course: 'FIN 401', title: 'Midterm Exam',            due: 'Apr 4'  },
+                  { course: 'FIN 401', title: 'Case Study Presentation', due: 'Apr 18' },
+                  { course: 'FIN 401', title: 'Final Paper',             due: 'May 2'  },
+                ] : [])].map((a, i) => (
                   <div key={i} style={{
                     display: 'flex', alignItems: 'center', gap: '14px',
                     padding: 'clamp(10px, 1.8vh, 14px) clamp(14px, 2.5vw, 18px)',
@@ -1242,63 +1548,88 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             height: '100%', overflowY: 'auto',
             padding: 'clamp(12px, 2vh, 18px) clamp(16px, 3vw, 28px)',
           }}>
-            <Label>Personal Checklist</Label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-              {PERSONAL_TASKS.map((task, i) => {
-                const done = !!personalDone[i]
-                const taskMsg = done ? getPetMessage(archetypeId, humorStyle, 'taskComplete', name) : null
-                return (
-                  <div key={i} onClick={() => togglePersonal(i)} style={{
-                    display: 'flex', flexDirection: 'column',
-                    padding: 'clamp(11px, 2vh, 15px) clamp(14px, 2.5vw, 18px)',
-                    backgroundColor: done ? '#F0FDF4' : T.surface,
-                    borderRadius: '8px',
-                    border: `1px solid ${done ? '#BBF7D0' : T.border}`,
-                    cursor: done ? 'default' : 'pointer',
-                    opacity: done ? 0.65 : 1,
-                    transition: 'opacity 250ms ease, background-color 200ms ease',
+            <Label>Life Admin</Label>
+            <p style={{
+              fontFamily: 'DM Sans, sans-serif', fontStyle: 'italic',
+              fontWeight: 300, fontSize: 'clamp(0.82rem, 1.4vw, 0.92rem)',
+              color: T.secondary, margin: '0 0 14px 0', lineHeight: 1.5,
+            }}>
+              Things to handle this week, {name}.
+            </p>
+            {['today', 'week'].map(group => {
+              const tasks = PERSONAL_TASKS
+                .map((t, i) => ({ ...t, i }))
+                .filter(t => group === 'today' ? t.today : !t.today)
+              if (tasks.length === 0) return null
+              return (
+                <div key={group} style={{ marginBottom: '14px' }}>
+                  <p style={{
+                    fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
+                    fontSize: '0.6rem', color: T.secondary,
+                    letterSpacing: '0.14em', textTransform: 'uppercase',
+                    margin: '0 0 7px 0',
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{
-                        width: '18px', height: '18px', flexShrink: 0, borderRadius: '4px',
-                        border: `2px solid ${done ? CAT_COLOR.personal : T.borderMid}`,
-                        backgroundColor: done ? CAT_COLOR.personal : 'transparent',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        transition: 'all 200ms ease',
-                      }}>
-                        {done && (
-                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        )}
-                      </div>
-                      <span style={{
-                        flex: 1, fontFamily: 'DM Sans, sans-serif',
-                        fontSize: 'clamp(0.88rem, 1.6vw, 1rem)', color: T.navy,
-                        textDecoration: done ? 'line-through' : 'none',
-                      }}>
-                        {task}
-                      </span>
-                      {done && (
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: CAT_COLOR.personal, fontWeight: 600, flexShrink: 0 }}>
-                          +{XP_PER_TASK} XP
-                        </span>
-                      )}
-                    </div>
-                    {done && taskMsg && (
-                      <p style={{
-                        fontFamily: 'DM Sans, sans-serif', fontStyle: 'italic',
-                        fontSize: '0.72rem', color: CAT_COLOR.personal,
-                        margin: '6px 0 0 30px', lineHeight: 1.4,
-                        animation: 'fade-in 300ms ease-out forwards',
-                      }}>
-                        {taskMsg}
-                      </p>
-                    )}
+                    {group === 'today' ? 'Today' : 'This Week'}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                    {tasks.map(({ label: task, i }) => {
+                      const done = !!personalDone[i]
+                      const taskMsg = done ? getPetMessage(archetypeId, humorStyle, 'taskComplete', name) : null
+                      return (
+                        <div key={i} onClick={() => togglePersonal(i)} style={{
+                          display: 'flex', flexDirection: 'column',
+                          padding: 'clamp(11px, 2vh, 15px) clamp(14px, 2.5vw, 18px)',
+                          backgroundColor: done ? '#F0FDF4' : T.surface,
+                          borderRadius: '8px',
+                          border: `1px solid ${done ? '#BBF7D0' : T.border}`,
+                          cursor: done ? 'default' : 'pointer',
+                          opacity: done ? 0.65 : 1,
+                          transition: 'opacity 250ms ease, background-color 200ms ease',
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{
+                              width: '18px', height: '18px', flexShrink: 0, borderRadius: '4px',
+                              border: `2px solid ${done ? CAT_COLOR.personal : T.borderMid}`,
+                              backgroundColor: done ? CAT_COLOR.personal : 'transparent',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              transition: 'all 200ms ease',
+                            }}>
+                              {done && (
+                                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                  <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              )}
+                            </div>
+                            <span style={{
+                              flex: 1, fontFamily: 'DM Sans, sans-serif',
+                              fontSize: 'clamp(0.88rem, 1.6vw, 1rem)', color: T.navy,
+                              textDecoration: done ? 'line-through' : 'none',
+                            }}>
+                              {task}
+                            </span>
+                            {done && (
+                              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: CAT_COLOR.personal, fontWeight: 600, flexShrink: 0 }}>
+                                +{XP_PER_TASK} XP
+                              </span>
+                            )}
+                          </div>
+                          {done && taskMsg && (
+                            <p style={{
+                              fontFamily: 'DM Sans, sans-serif', fontStyle: 'italic',
+                              fontSize: '0.72rem', color: CAT_COLOR.personal,
+                              margin: '6px 0 0 30px', lineHeight: 1.4,
+                              animation: 'fade-in 300ms ease-out forwards',
+                            }}>
+                              {taskMsg}
+                            </p>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
-                )
-              })}
-            </div>
+                </div>
+              )
+            })}
           </div>
         )}
 

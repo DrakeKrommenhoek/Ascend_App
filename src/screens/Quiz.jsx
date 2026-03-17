@@ -99,7 +99,7 @@ export default function Quiz({ name, onComplete, onBack }) {
             lineHeight: 1.35,
             margin: '0 0 clamp(0.75rem, 1.5vh, 1.25rem) 0',
           }}>
-            Alright {name}, a few quick questions.
+            Before we build your game plan, {name} — a few quick questions.
           </h2>
           <p style={{
             fontFamily: 'DM Sans, sans-serif',
@@ -110,7 +110,7 @@ export default function Quiz({ name, onComplete, onBack }) {
             margin: '0 0 clamp(2rem, 4vh, 3.5rem) 0',
             textAlign: 'center',
           }}>
-            The fact that you're here already says something.
+            90 seconds. This shapes your weekly dashboard.
           </p>
           <button
             onClick={handleStartQuiz}
@@ -156,7 +156,7 @@ export default function Quiz({ name, onComplete, onBack }) {
             textTransform: 'uppercase',
             margin: '0 0 1.25rem 0',
           }}>
-            {qIndex + 1} / {QUESTIONS.length}
+            QUESTION {qIndex + 1} OF {QUESTIONS.length}
           </p>
 
           {/* Question */}

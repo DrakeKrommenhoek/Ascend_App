@@ -17,6 +17,12 @@ export default function App() {
   const handleQuizComplete     = useCallback((result) => { setArchetype(result); setScreen('reveal') }, [])
   const handleRevealComplete   = useCallback(() => setScreen('petIntro'), [])
   const handlePetIntroComplete = useCallback((hs) => { setHumorStyle(hs); setScreen('dashboard') }, [])
+  const handleSkipToDemo       = useCallback(() => {
+    setName('Drake')
+    setArchetype('eagle')
+    setHumorStyle('straight')
+    setScreen('dashboard')
+  }, [])
   const handleQuizBack         = useCallback(() => setScreen('nameCapture'), [])
   const handleRestart          = useCallback(() => {
     setScreen('intro')
@@ -28,7 +34,7 @@ export default function App() {
   return (
     <div className="w-full h-full" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {screen === 'intro' && (
-        <Intro onComplete={handleIntroComplete} />
+        <Intro onComplete={handleIntroComplete} onSkipToDemo={handleSkipToDemo} />
       )}
       {screen === 'nameCapture' && (
         <NameCapture onComplete={handleNameComplete} />

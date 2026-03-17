@@ -77,7 +77,7 @@ const LABEL_PARAMS = [
 /* ─────────────────────────────────────────────────────────────
    INTRO SCREEN
 ───────────────────────────────────────────────────────────── */
-export default function Intro({ onComplete }) {
+export default function Intro({ onComplete, onSkipToDemo }) {
   const containerRef    = useRef(null)
   const iconRefs        = useRef({})
   const labelRefs       = useRef({})
@@ -89,9 +89,17 @@ export default function Intro({ onComplete }) {
   const [dim, setDim] = useState({ w: 0, h: 0 })
 
   // Phase 3 states — controls post-convergence DOM
-  const [showWordmark,  setShowWordmark]  = useState(false)
-  const [showTagline,   setShowTagline]   = useState(false)
-  const [showDontPress, setShowDontPress] = useState(false)
+  const [showWordmark,    setShowWordmark]    = useState(false)
+  const [showTagline,     setShowTagline]     = useState(false)
+  const [showDontPress,   setShowDontPress]   = useState(false)
+  const [showEagleOverlay, setShowEagleOverlay] = useState(false)
+
+  // Auto-advance to dashboard after Eagle overlay shows
+  useEffect(() => {
+    if (!showEagleOverlay || !onSkipToDemo) return
+    const t = setTimeout(onSkipToDemo, 2500)
+    return () => clearTimeout(t)
+  }, [showEagleOverlay, onSkipToDemo])
 
   /* Measure container */
   useEffect(() => {
@@ -277,6 +285,63 @@ export default function Intro({ onComplete }) {
       className="relative w-full h-full overflow-hidden"
       style={{ backgroundColor: 'var(--bg-primary)' }}
     >
+      {/* ── Skip to demo button ─────────────────────────────── */}
+      {!showEagleOverlay && (
+        <button
+          onClick={() => setShowEagleOverlay(true)}
+          style={{
+            position: 'fixed', top: 20, right: 24, zIndex: 9999,
+            background: 'none',
+            border: showWordmark
+              ? '1px solid rgba(27,58,107,0.35)'
+              : '1px solid rgba(255,255,255,0.35)',
+            borderRadius: '6px',
+            color: showWordmark
+              ? 'rgba(27,58,107,0.6)'
+              : 'rgba(255,255,255,0.7)',
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '0.75rem',
+            padding: '6px 14px',
+            cursor: 'pointer',
+            letterSpacing: '0.02em',
+          }}
+        >
+          Skip to demo →
+        </button>
+      )}
+
+      {/* ── Eagle overlay — shown when skip is clicked ──────── */}
+      {showEagleOverlay && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10000,
+          backgroundColor: '#0D1B2A',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center', gap: 16,
+        }}>
+          <div style={{ fontSize: '2.8rem' }}>🦅</div>
+          <p style={{
+            fontFamily: 'Playfair Display, serif',
+            fontSize: '1.5rem',
+            color: '#fff',
+            margin: 0,
+          }}>
+            Skipping the intro?
+          </p>
+          <p style={{
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '0.95rem',
+            color: 'rgba(255,255,255,0.65)',
+            maxWidth: 360,
+            textAlign: 'center',
+            margin: 0,
+            lineHeight: 1.7,
+          }}>
+            Noted. Protecting your time is the Eagle's highest discipline.<br />
+            You're already thinking like one.
+          </p>
+        </div>
+      )}
+
       {/* Subtle depth vignette on dark phase */}
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
@@ -416,18 +481,43 @@ export default function Intro({ onComplete }) {
 
           {/* Tagline */}
           {showTagline && (
-            <p style={{
-              marginTop: '18px',
-              fontFamily: 'DM Sans, sans-serif',
-              fontWeight: 300,
-              fontSize: '1.05rem',
-              color: '#1B3A6B',
-              letterSpacing: '0.04em',
-              animation: 'fade-in 400ms ease-out forwards',
-              opacity: 0,
-            }}>
-              Clarity for your climb.
-            </p>
+            <>
+              <p style={{
+                marginTop: '18px',
+                fontFamily: 'DM Sans, sans-serif',
+                fontWeight: 300,
+                fontSize: '1.05rem',
+                color: '#1B3A6B',
+                letterSpacing: '0.04em',
+                animation: 'fade-in 400ms ease-out forwards',
+                opacity: 0,
+                margin: '18px 0 0',
+              }}>
+                Clarity for your climb.
+              </p>
+              <p style={{
+                fontFamily: 'DM Sans, sans-serif',
+                fontWeight: 400,
+                fontSize: '0.92rem',
+                color: '#555',
+                letterSpacing: '0.02em',
+                margin: '6px 0 0',
+                animation: 'fade-in 400ms ease-out forwards',
+              }}>
+                All your commitments, one interface.
+              </p>
+              <p style={{
+                fontFamily: 'DM Sans, sans-serif',
+                fontWeight: 400,
+                fontSize: '0.75rem',
+                color: '#999',
+                letterSpacing: '0.03em',
+                margin: '16px 0 0',
+                animation: 'fade-in 400ms ease-out forwards',
+              }}>
+                🎓 117 students on early access
+              </p>
+            </>
           )}
         </div>
       )}

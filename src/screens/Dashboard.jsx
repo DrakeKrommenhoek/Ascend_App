@@ -44,11 +44,13 @@ const MARCH_EVENTS = {
   6:  [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
     { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+    { label: 'Goldman 1st Rnd',     cat: 'recruiting', time: '14:00', duration: 60 },
   ],
   // ── Week 2 (past, today = 13) ─────────────────────────────────────────
   9:  [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
     { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+    { label: 'JPM Superday',        cat: 'recruiting', time: '10:00', duration: 180 },
   ],
   10: [{ label: 'BUS 160',          cat: 'academic',   time: '14:00', duration: 60 }],
   11: [
@@ -64,7 +66,7 @@ const MARCH_EVENTS = {
   16: [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
     { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
-    { label: 'Review Notes',        cat: 'academic',   time: '20:00', duration: 60 },
+    { label: 'HL First Round',      cat: 'recruiting', time: '15:00', duration: 45 },
   ],
   17: [
     { label: 'BUS 160 Team Mtg',    cat: 'academic',   time: '14:00', duration: 60 },
@@ -72,13 +74,13 @@ const MARCH_EVENTS = {
   ],
   18: [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'HW Superday',         cat: 'recruiting', time: '11:00', duration: 180 },
     { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
-    { label: 'Coffee Chat',         cat: 'recruiting', time: '11:00', duration: 45 },
     { label: 'ECON PS Due',         cat: 'academic',   time: '23:59', duration: 0, isDeadline: true },
   ],
   19: [
     { label: 'Study Group',         cat: 'academic',   time: '13:00', duration: 90 },
-    { label: 'Test Prep',           cat: 'academic',   time: '18:00', duration: 120 },
+    { label: 'Recruiting Debrief',  cat: 'recruiting', time: '16:00', duration: 30 },
   ],
   20: [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
@@ -92,7 +94,7 @@ const MARCH_EVENTS = {
   // ── Week 4 ────────────────────────────────────────────────────────────
   22: [
     { label: 'Call Mom',            cat: 'personal',   time: '16:00', duration: 30 },
-    { label: 'Goldman Due',         cat: 'recruiting', time: '23:59', duration: 0, isDeadline: true },
+    { label: 'WF App Due',          cat: 'recruiting', time: '23:59', duration: 0, isDeadline: true },
   ],
   23: [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
@@ -100,14 +102,15 @@ const MARCH_EVENTS = {
   ],
   24: [
     { label: 'BUS 160 Team Mtg',    cat: 'academic',   time: '14:00', duration: 60 },
-    { label: 'Mock Interview',      cat: 'recruiting', time: '16:00', duration: 60 },
+    { label: 'HL Superday',         cat: 'recruiting', time: '10:00', duration: 180 },
   ],
   25: [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
     { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+    { label: 'WB First Round',      cat: 'recruiting', time: '14:00', duration: 45 },
   ],
   26: [
-    { label: 'Tech Interview Prep', cat: 'recruiting', time: '15:00', duration: 90 },
+    { label: 'Baird App Due',       cat: 'recruiting', time: '23:59', duration: 0, isDeadline: true },
   ],
   27: [
     { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
@@ -124,14 +127,14 @@ const MARCH_EVENTS = {
 // Days with conflicts (amber flag on calendar + warning in day detail)
 const CONFLICT_DAYS = new Set([20])
 const CONFLICT_MSG = {
-  20: "Heads up — Goldman deadline Sunday and ECON midterm are both this week. Your best prep window is Tuesday night.",
+  20: "Heads up — Wells Fargo deadline Sunday and ECON midterm are both this week. Your best prep window is Tuesday night.",
 }
 
 const COMMAND_CENTER_ITEMS = [
-  { priority: 'red',    label: 'Goldman Sachs app deadline',  detail: 'Sun Mar 22 · 11:59pm' },
+  { priority: 'red',    label: 'Harris Williams Superday',    detail: 'Wed Mar 18 · 11am'    },
   { priority: 'red',    label: 'ECON 301 midterm',            detail: 'Fri Mar 20 · 9am'     },
+  { priority: 'yellow', label: 'Wells Fargo app deadline',    detail: 'Sun Mar 22 · 11:59pm' },
   { priority: 'yellow', label: 'ECON 301 problem set due',    detail: 'Wed Mar 18 · 11:59pm' },
-  { priority: 'yellow', label: 'Coffee chat — prep needed',   detail: 'Wed Mar 18 · 11am'    },
   { priority: 'green',  label: 'Get tux for Fancy Dress',     detail: 'Sat Mar 21 · 11am'    },
 ]
 const PRIORITY_COLOR = { red: '#E84545', yellow: '#D97706', green: '#1DAF72' }
@@ -149,11 +152,11 @@ const INTEGRATIONS = [
   { name: 'Outlook',         logo: '📧' },
 ]
 const RECRUITING_ACTIVITIES = [
-  { label: 'Goldman Sachs — App Deadline', date: 'Mar 22' },
-  { label: 'Coffee Chat with Alumnus',     date: 'Mar 18' },
-  { label: 'CPD Office Meeting',           date: 'Mar 20' },
-  { label: 'Mock Interview Prep',          date: 'Mar 24' },
-  { label: 'Google Info Session',          date: 'Mar 27' },
+  { label: 'Harris Williams Superday',     date: 'Mar 18' },
+  { label: 'Wells Fargo App Deadline',     date: 'Mar 22' },
+  { label: 'Houlihan Lokey Superday',      date: 'Mar 24' },
+  { label: 'William Blair First Round',    date: 'Mar 25' },
+  { label: 'Baird App Deadline',           date: 'Mar 26' },
 ]
 const NETWORKING_CONTACTS = [
   { name: 'Sarah Chen',               company: 'Goldman Sachs', role: 'VP Recruiting', dateMet: 'Feb 12', status: 'Thank you sent ✓',      statusColor: '#1DAF72' },
@@ -683,13 +686,14 @@ function exportNetworkingXlsx() {
 export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) {
   const archetype = ARCHETYPES[archetypeId] || ARCHETYPES.eagle
 
-  const [activeTab,    setActiveTab]    = useState('master')
-  const [showCC,       setShowCC]       = useState(false)
-  const [selectedDay,  setSelectedDay]  = useState(null)
-  const [personalDone, setPersonalDone] = useState({})
-  const [xp,           setXp]           = useState(0)
-  const [showPetModal, setShowPetModal] = useState(false)
-  const [showBanner,   setShowBanner]   = useState(false)
+  const [activeTab,      setActiveTab]      = useState('master')
+  const [showCC,         setShowCC]         = useState(false)
+  const [selectedDay,    setSelectedDay]    = useState(null)
+  const [personalDone,   setPersonalDone]   = useState({})
+  const [xp,             setXp]             = useState(0)
+  const [showPetModal,   setShowPetModal]   = useState(false)
+  const [showBanner,     setShowBanner]     = useState(false)
+  const [showProTooltip, setShowProTooltip] = useState(false)
   const bannerTimerRef = useRef(null)
 
   const hour = new Date().getHours()
@@ -770,6 +774,13 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
           }}>
             {name}.
           </p>
+          <p style={{
+            fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem',
+            color: T.secondary, margin: '4px 0 0 0', opacity: 0.7,
+            cursor: 'pointer', letterSpacing: '0.02em',
+          }}>
+            Upgrade to Pro ↗
+          </p>
         </div>
 
         {/* Pet widget */}
@@ -819,13 +830,21 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
 
       {/* ── TAB BAR ─────────────────────────────────────────── */}
       <div style={{
-        flexShrink: 0, display: 'flex',
+        flexShrink: 0, display: 'flex', position: 'relative',
         borderBottom: `1px solid ${T.border}`,
         padding: `0 clamp(16px, 3vw, 28px)`,
       }}>
         {TABS.map(tab => (
           <button key={tab}
-            onClick={() => { setActiveTab(tab); setShowCC(false) }}
+            onClick={() => {
+              if (tab === 'recruiting') {
+                setShowProTooltip(true)
+                setTimeout(() => setShowProTooltip(false), 3000)
+                return
+              }
+              setActiveTab(tab)
+              setShowCC(false)
+            }}
             style={{
               background: 'none', border: 'none',
               borderBottom: activeTab === tab ? `2px solid ${T.navy}` : '2px solid transparent',
@@ -836,11 +855,36 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
               cursor: 'pointer', textTransform: 'capitalize',
               transition: 'color 150ms ease, border-color 150ms ease',
               marginBottom: '-1px',
+              display: 'flex', alignItems: 'center', gap: '5px',
             }}
           >
-            {tab}
+            {tab === 'recruiting' ? (
+              <>
+                Recruiting
+                <span style={{ fontSize: '0.6rem' }}>🔒</span>
+                <span style={{
+                  fontSize: '0.5rem', fontWeight: 700,
+                  backgroundColor: T.navy, color: 'white',
+                  borderRadius: '3px', padding: '1px 4px', lineHeight: 1.5,
+                }}>
+                  PRO
+                </span>
+              </>
+            ) : tab}
           </button>
         ))}
+        {showProTooltip && (
+          <div style={{
+            position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+            backgroundColor: T.navy, color: 'white',
+            borderRadius: '8px', padding: '8px 16px',
+            fontSize: '0.72rem', fontFamily: 'DM Sans, sans-serif',
+            whiteSpace: 'nowrap', zIndex: 100, marginTop: '6px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
+          }}>
+            Recruiting intelligence is an Ascend Pro feature.
+          </div>
+        )}
       </div>
 
       {/* ── CONTENT ─────────────────────────────────────────── */}
@@ -866,7 +910,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 fontFamily: 'DM Sans, sans-serif', fontSize: '0.76rem',
                 color: 'rgba(255,255,255,0.88)', margin: 0, lineHeight: 1.55,
               }}>
-                <strong style={{ color: 'white' }}>IB application windows open in 6 weeks</strong> — Goldman, JPM, and Evercore typically open late March. Your prep window is now.
+                <strong style={{ color: 'white' }}>BB cycles wrapped in January.</strong> Middle market is live — Harris Williams and Houlihan Lokey superdays are this month. Wells Fargo and Baird first rounds close March 22. A few regional boutiques are still accepting apps.
               </p>
             </div>
 
@@ -899,8 +943,8 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {[
                     { dot: CAT_COLOR.academic,   text: 'ECON 301 midterm Friday 9am — start review tonight' },
-                    { dot: CAT_COLOR.recruiting, text: "Goldman Sachs deadline Sunday 11:59pm — don't let it sneak up" },
-                    { dot: CAT_COLOR.recruiting, text: 'Coffee chat with alumni Wednesday — prep your talking points' },
+                    { dot: CAT_COLOR.recruiting, text: 'Harris Williams Superday Wednesday 11am — your biggest window this month' },
+                    { dot: CAT_COLOR.recruiting, text: 'Wells Fargo first round deadline Sunday 11:59pm — submit before Saturday' },
                     { dot: CAT_COLOR.personal,   text: "Get tux Saturday before Fancy Dress — no one's covering for you" },
                   ].map((item, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
@@ -990,6 +1034,16 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 )}
               </div>
             )}
+
+            {/* B2B footer */}
+            <p style={{
+              fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem',
+              fontStyle: 'italic', color: T.secondary,
+              textAlign: 'center', padding: '4px 0 8px',
+              margin: 0, opacity: 0.55,
+            }}>
+              Built for career centers. Inquire at ascend.app/partners
+            </p>
 
             {/* Floating CC button */}
             <button

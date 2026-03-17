@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===========================
+   DESIGN TOKENS
+   =========================== */
+:root {
+  --bg-primary: #0A0E1A;
+  --bg-surface: #131929;
+  --bg-elevated: #1C2438;
+  --accent-blue: #4F8EF7;
+  --accent-gold: #F5C842;
+  --accent-teal: #2DD4BF;
+  --text-primary: #F0F4FF;
+  --text-secondary: #8B95A8;
+  --success: #34D399;
+  --warning: #FBBF24;
+  --danger: #F87171;
+}
+
+/* ===========================
+   BASE RESETS
+   =========================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===========================
+   ASCEND A MARK
+   Sits perfectly still at center.
+   Beat 3 adds .revealed to fade it in —
+   no scale, no bounce, no glow.
+   =========================== */
+
+.ascend-mark {
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 800ms ease-in-out;
+}
+
+.ascend-mark.revealed {
+  opacity: 1;
+}
+
+/* ===========================
+   'DON'T PRESS' BUTTON
+   Small red pulsing circle that
+   appears at the A's arrow tip.
+   =========================== */
+
+.dont-press-btn {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background-color: #e53e3e;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Expanding pulse ring */
+.dont-press-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: #e53e3e;
+  animation: dont-press-ring 1.8s ease-out infinite;
+}
+
+@keyframes dont-press-ring {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  100% { transform: scale(3.2); opacity: 0;    }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes slide-up-panel {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0);    }
+}
+
+/* ===========================
+   SEQUENCED CONTENT
+   =========================== */
+
+.seq-hidden {
+  opacity: 0;
+}
+
+/* ===========================
+   HOLD RING — touch fix
+   Prevents scroll interference
+   on iPad during pointer hold.
+   =========================== */
+
+.hold-ring-btn {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

@@ -836,15 +836,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
       }}>
         {TABS.map(tab => (
           <button key={tab}
-            onClick={() => {
-              if (tab === 'recruiting') {
-                setShowProTooltip(true)
-                setTimeout(() => setShowProTooltip(false), 3000)
-                return
-              }
-              setActiveTab(tab)
-              setShowCC(false)
-            }}
+            onClick={() => { setActiveTab(tab); setShowCC(false) }}
             style={{
               background: 'none', border: 'none',
               borderBottom: activeTab === tab ? `2px solid ${T.navy}` : '2px solid transparent',
@@ -1114,6 +1106,50 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
 
         {/* ── RECRUITING ──────────────────────────────────── */}
         {activeTab === 'recruiting' && (
+          <div style={{ height: '100%', position: 'relative' }}>
+
+          {/* Pro blur overlay */}
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 50,
+            backdropFilter: 'blur(5px)',
+            WebkitBackdropFilter: 'blur(5px)',
+            backgroundColor: 'rgba(255,255,255,0.55)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '14px',
+              border: `1px solid ${T.border}`,
+              boxShadow: '0 8px 32px rgba(27,58,107,0.12)',
+              padding: '28px 36px',
+              textAlign: 'center',
+              maxWidth: '320px',
+            }}>
+              <div style={{ fontSize: '1.8rem', marginBottom: '10px' }}>🔒</div>
+              <p style={{
+                fontFamily: 'Playfair Display, serif', fontWeight: 600,
+                fontSize: '1.1rem', color: T.navy, margin: '0 0 6px 0',
+              }}>
+                Ascend Pro
+              </p>
+              <p style={{
+                fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem',
+                color: T.secondary, margin: '0 0 18px 0', lineHeight: 1.55,
+              }}>
+                Full recruiting intelligence — pipeline tracking, networking CRM, and firm-specific deadline alerts.
+              </p>
+              <div style={{
+                display: 'inline-block',
+                backgroundColor: T.navy, color: 'white',
+                borderRadius: '8px', padding: '8px 20px',
+                fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 600,
+                letterSpacing: '0.03em', cursor: 'default',
+              }}>
+                Unlock Recruiting Intelligence ↗
+              </div>
+            </div>
+          </div>
+
           <div style={{
             height: '100%', overflowY: 'auto',
             padding: 'clamp(12px, 2vh, 18px) clamp(16px, 3vw, 28px)',
@@ -1196,6 +1232,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 ))}
               </div>
             </div>
+          </div>
           </div>
         )}
 

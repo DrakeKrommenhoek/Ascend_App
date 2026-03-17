@@ -31,41 +31,94 @@ const TODAY = 13
 
 // Each event: { label, cat, time (HH:MM 24h), duration (min), isDeadline? }
 const MARCH_EVENTS = {
-  9:  [{ label: 'ECON 301 — Class',      cat: 'academic',   time: '09:00', duration: 75 }],
-  11: [{ label: 'BUS 160',               cat: 'academic',   time: '14:00', duration: 60 }],
-  13: [{ label: 'CPD Office Hours',      cat: 'recruiting', time: '14:00', duration: 45 }],
+  // ── Week 1 (past) ──────────────────────────────────────────────────────
+  2:  [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  3:  [{ label: 'BUS 160',          cat: 'academic',   time: '14:00', duration: 60 }],
+  4:  [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  6:  [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  // ── Week 2 (past, today = 13) ─────────────────────────────────────────
+  9:  [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  10: [{ label: 'BUS 160',          cat: 'academic',   time: '14:00', duration: 60 }],
+  11: [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  13: [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+    { label: 'CPD Office Hours',    cat: 'recruiting', time: '14:00', duration: 45 },
+  ],
+  // ── Week 3 (current week) ─────────────────────────────────────────────
   16: [
-    { label: 'ECON 301 — Class',         cat: 'academic',   time: '09:00', duration: 75 },
-    { label: 'Review notes',             cat: 'academic',   time: '20:00', duration: 60 },
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+    { label: 'Review Notes',        cat: 'academic',   time: '20:00', duration: 60 },
   ],
   17: [
-    { label: 'BUS 160 Team Meeting',     cat: 'academic',   time: '14:00', duration: 60 },
-    { label: 'Technical training',       cat: 'personal',   time: '19:00', duration: 90 },
+    { label: 'BUS 160 Team Mtg',    cat: 'academic',   time: '14:00', duration: 60 },
+    { label: 'Tech Training',       cat: 'academic',   time: '19:00', duration: 90 },
   ],
   18: [
-    { label: 'Coffee chat — alumni',     cat: 'recruiting', time: '11:00', duration: 45 },
-    { label: 'ECON 301 PS due 11:59pm',  cat: 'academic',   time: '23:59', duration: 0, isDeadline: true },
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+    { label: 'Coffee Chat',         cat: 'recruiting', time: '11:00', duration: 45 },
+    { label: 'ECON PS Due',         cat: 'academic',   time: '23:59', duration: 0, isDeadline: true },
   ],
   19: [
-    { label: 'ECON 301 — Class',         cat: 'academic',   time: '09:00', duration: 75 },
-    { label: 'Study group',              cat: 'academic',   time: '13:00', duration: 90 },
-    { label: 'Test prep session',        cat: 'academic',   time: '18:00', duration: 120 },
+    { label: 'Study Group',         cat: 'academic',   time: '13:00', duration: 90 },
+    { label: 'Test Prep',           cat: 'academic',   time: '18:00', duration: 120 },
   ],
   20: [
-    { label: 'ECON 301 Midterm',         cat: 'academic',   time: '09:00', duration: 90 },
-    { label: 'CPD Office Meeting',       cat: 'recruiting', time: '14:00', duration: 60 },
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON Midterm',        cat: 'academic',   time: '09:00', duration: 90 },
+    { label: 'CPD Meeting',         cat: 'recruiting', time: '14:00', duration: 60 },
   ],
   21: [
-    { label: 'Get tux — Fancy Dress',    cat: 'personal',   time: '11:00', duration: 60 },
-    { label: 'Lunch with alumni',        cat: 'recruiting', time: '13:00', duration: 90 },
+    { label: 'Get Tux',             cat: 'personal',   time: '11:00', duration: 60 },
+    { label: 'Alumni Lunch',        cat: 'personal',   time: '13:00', duration: 90 },
   ],
+  // ── Week 4 ────────────────────────────────────────────────────────────
   22: [
-    { label: 'Call Mom',                 cat: 'personal',   time: '16:00', duration: 30 },
-    { label: 'Goldman Sachs deadline',   cat: 'recruiting', time: '23:59', duration: 0, isDeadline: true },
+    { label: 'Call Mom',            cat: 'personal',   time: '16:00', duration: 30 },
+    { label: 'Goldman Due',         cat: 'recruiting', time: '23:59', duration: 0, isDeadline: true },
   ],
-  24: [{ label: 'Mock Interview Prep',  cat: 'recruiting', time: '14:00', duration: 60 }],
-  26: [{ label: 'ECON 301 — Class',     cat: 'academic',   time: '09:00', duration: 75 }],
-  30: [{ label: 'ECON 301 — Class',     cat: 'academic',   time: '09:00', duration: 75 }],
+  23: [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  24: [
+    { label: 'BUS 160 Team Mtg',    cat: 'academic',   time: '14:00', duration: 60 },
+    { label: 'Mock Interview',      cat: 'recruiting', time: '16:00', duration: 60 },
+  ],
+  25: [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  26: [
+    { label: 'Tech Interview Prep', cat: 'recruiting', time: '15:00', duration: 90 },
+  ],
+  27: [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  // ── Week 5 ────────────────────────────────────────────────────────────
+  30: [
+    { label: 'Gym',                 cat: 'personal',   time: '07:00', duration: 60 },
+    { label: 'ECON 301',            cat: 'academic',   time: '09:00', duration: 75 },
+  ],
+  31: [{ label: 'BUS 160 Team Mtg', cat: 'academic',   time: '14:00', duration: 60 }],
 }
 
 // Days with conflicts (amber flag on calendar + warning in day detail)
@@ -466,7 +519,7 @@ function DayDetailPanel({ day, name, onClose }) {
 // ── Calendar grid ─────────────────────────────────────────────────────────────
 function CalendarGrid({ compact, onDayClick }) {
   return (
-    <div>
+    <div style={{ minHeight: compact ? undefined : 400 }}>
       {!compact && (
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -514,7 +567,7 @@ function CalendarGrid({ compact, onDayClick }) {
                   key={di}
                   onClick={() => day && !compact && onDayClick(day)}
                   style={{
-                    minHeight: compact ? '26px' : '60px',
+                    minHeight: compact ? '26px' : '76px',
                     borderRadius: '5px',
                     backgroundColor: isToday ? '#EEF4FF' : T.surface,
                     border: `1px solid ${isToday ? '#BFDBFE' : T.border}`,
@@ -552,16 +605,39 @@ function CalendarGrid({ compact, onDayClick }) {
                           {day}
                         </span>
                       </div>
-                      {!compact && events.slice(0, 2).map((ev, ei) => (
-                        <div key={ei} style={{
-                          fontSize: '0.56rem', fontFamily: 'DM Sans, sans-serif',
-                          color: CAT_COLOR[ev.cat], lineHeight: 1.2,
-                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                          marginBottom: '1px', fontWeight: 500,
-                        }}>
-                          {ev.isDeadline ? '⏱ ' : ''}{ev.label}
-                        </div>
-                      ))}
+                      {!compact && (
+                        <>
+                          {events.slice(0, 2).map((ev, ei) => (
+                            <div key={ei} style={{
+                              fontSize: '0.54rem',
+                              fontFamily: 'DM Sans, sans-serif',
+                              fontWeight: 600,
+                              color: CAT_COLOR[ev.cat],
+                              backgroundColor: CAT_BG[ev.cat],
+                              borderRadius: '3px',
+                              padding: '1px 4px',
+                              lineHeight: 1.3,
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              marginBottom: '1px',
+                            }}>
+                              {ev.isDeadline ? '⏱ ' : ''}{ev.label}
+                            </div>
+                          ))}
+                          {events.length > 2 && (
+                            <div style={{
+                              fontSize: '0.5rem',
+                              fontFamily: 'DM Sans, sans-serif',
+                              color: T.secondary,
+                              fontWeight: 500,
+                              lineHeight: 1.3,
+                            }}>
+                              +{events.length - 2} more
+                            </div>
+                          )}
+                        </>
+                      )}
                     </>
                   )}
                 </div>
@@ -799,7 +875,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
               flexShrink: 0,
               flex: showCC ? '0 0 auto' : undefined,
               maxHeight: showCC ? '90px' : undefined,
-              overflow: 'hidden',
+              overflow: showCC ? 'hidden' : 'visible',
               transition: 'max-height 350ms ease',
             }}>
               <CalendarGrid compact={showCC} onDayClick={setSelectedDay} />

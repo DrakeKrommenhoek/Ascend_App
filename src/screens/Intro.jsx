@@ -19,7 +19,7 @@ const easeInOut = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2
    TIMING
 ───────────────────────────────────────────────────────────── */
 const T_ENTER    =  900
-const T_CHAOS    = 3800
+const T_CHAOS    = 1500
 const T_CONVERGE = 2400
 const T_BEAT3    = T_CHAOS + T_CONVERGE   // 6 200 ms
 

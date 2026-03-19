@@ -836,6 +836,12 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
   const [showPetModal,   setShowPetModal]   = useState(false)
   const [showBanner,     setShowBanner]     = useState(false)
   const [showProTooltip, setShowProTooltip] = useState(false)
+  const [isPremium,      setIsPremium]      = useState(false)
+  const [lockAnim,       setLockAnim]       = useState('locked') // 'locked' | 'unlocking' | 'unlocked'
+  const [emailModal,     setEmailModal]     = useState(null)     // null | contact object
+  const [emailText,      setEmailText]      = useState('')
+  const [emailCopied,    setEmailCopied]    = useState(false)
+  const lockAnimTimerRef = useRef(null)
   const bannerTimerRef = useRef(null)
 
   const hour = new Date().getHours()
@@ -849,6 +855,31 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
     dow === 6 ? 'saturday'           : 'morning'
 
   const petMsg = getPetMessage(archetypeId, humorStyle, petContext, name)
+
+  function togglePremium() {
+    if (isPremium) {
+      clearTimeout(lockAnimTimerRef.current)
+      setLockAnim('locked')
+      setIsPremium(false)
+    } else {
+      setIsPremium(true)
+      setLockAnim('unlocking')
+      lockAnimTimerRef.current = setTimeout(() => setLockAnim('unlocked'), 600)
+    }
+  }
+
+  function draftThankYouEmail(contact) {
+    const dateClause = contact.dateMet && contact.dateMet !== 'TBD'
+      ? ` on ${contact.dateMet}`
+      : ''
+    return `Hi ${contact.name},\n\nThank you so much for taking the time to connect with me${dateClause}. Our conversation about the opportunities at ${contact.company} was incredibly insightful, and I truly appreciated your perspective on the recruiting process.\n\nI'm very excited about the possibility of joining the team at ${contact.company}. Please don't hesitate to reach out if you need anything further from me.\n\nBest regards,\n[Your Name]`
+  }
+
+  function openEmailModal(contact) {
+    setEmailText(draftThankYouEmail(contact))
+    setEmailCopied(false)
+    setEmailModal(contact)
+  }
 
   function togglePersonal(idx) {
     if (personalDone[idx]) return
@@ -970,6 +1001,61 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
         </button>
       </div>
 
+      {/* ── FREE / PREMIUM TOGGLE ───────────────────────────── */}
+      <div style={{
+        flexShrink: 0, display: 'flex', justifyContent: 'center',
+        padding: '8px 0 6px',
+        borderBottom: `1px solid ${T.border}`,
+      }}>
+        <div
+          onClick={togglePremium}
+          style={{
+            position: 'relative',
+            display: 'flex', alignItems: 'center',
+            width: '196px', height: '30px',
+            backgroundColor: T.surface,
+            border: `1px solid ${T.borderMid}`,
+            borderRadius: '15px',
+            cursor: 'pointer',
+            userSelect: 'none',
+          }}
+        >
+          {/* Sliding pill */}
+          <div style={{
+            position: 'absolute',
+            left: '3px',
+            width: 'calc(50% - 3px)',
+            height: 'calc(100% - 6px)',
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+            transform: isPremium ? 'translateX(100%)' : 'translateX(0)',
+            transition: 'transform 200ms ease',
+          }} />
+          {/* Labels */}
+          <span style={{
+            position: 'relative', zIndex: 1,
+            flex: 1, textAlign: 'center',
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '0.72rem', fontWeight: 600,
+            color: !isPremium ? T.navy : T.secondary,
+            transition: 'color 200ms ease',
+          }}>
+            Free
+          </span>
+          <span style={{
+            position: 'relative', zIndex: 1,
+            flex: 1, textAlign: 'center',
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '0.72rem', fontWeight: 600,
+            color: isPremium ? '#D97706' : T.secondary,
+            transition: 'color 200ms ease',
+          }}>
+            Premium
+          </span>
+        </div>
+      </div>
+
       {/* ── TAB BAR ─────────────────────────────────────────── */}
       <div style={{
         flexShrink: 0, display: 'flex', position: 'relative',
@@ -994,15 +1080,32 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
           >
             {tab === 'recruiting' ? (
               <>
-                Recruiting
-                <span style={{ fontSize: '0.6rem' }}>🔒</span>
                 <span style={{
-                  fontSize: '0.5rem', fontWeight: 700,
-                  backgroundColor: T.navy, color: 'white',
-                  borderRadius: '3px', padding: '1px 4px', lineHeight: 1.5,
+                  color: isPremium ? '#D97706' : 'inherit',
+                  transition: 'color 300ms ease',
                 }}>
-                  PRO
+                  Recruiting
                 </span>
+                {lockAnim !== 'unlocked' && (
+                  <span style={{
+                    fontSize: '0.6rem',
+                    display: 'inline-block',
+                    opacity: lockAnim === 'unlocking' ? 0 : 1,
+                    transform: lockAnim === 'unlocking' ? 'scale(1.3)' : 'scale(1)',
+                    transition: 'opacity 500ms ease, transform 500ms ease',
+                  }}>
+                    {lockAnim === 'unlocking' ? '🔓' : '🔒'}
+                  </span>
+                )}
+                {!isPremium && (
+                  <span style={{
+                    fontSize: '0.5rem', fontWeight: 700,
+                    backgroundColor: T.navy, color: 'white',
+                    borderRadius: '3px', padding: '1px 4px', lineHeight: 1.5,
+                  }}>
+                    PRO
+                  </span>
+                )}
               </>
             ) : tab}
           </button>
@@ -1434,7 +1537,8 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
         {activeTab === 'recruiting' && (
           <div style={{ height: '100%', position: 'relative' }}>
 
-          {/* Pro blur overlay */}
+          {/* Pro blur overlay — only in Free mode */}
+          {!isPremium && (
           <div style={{
             position: 'absolute', inset: 0, zIndex: 50,
             backdropFilter: 'blur(5px)',
@@ -1464,17 +1568,21 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
               }}>
                 Full recruiting intelligence — pipeline tracking, networking CRM, and firm-specific deadline alerts.
               </p>
-              <div style={{
-                display: 'inline-block',
-                backgroundColor: T.navy, color: 'white',
-                borderRadius: '8px', padding: '8px 20px',
-                fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 600,
-                letterSpacing: '0.03em', cursor: 'default',
-              }}>
-                Unlock Recruiting Intelligence ↗
+              <div
+                onClick={togglePremium}
+                style={{
+                  display: 'inline-block',
+                  backgroundColor: T.navy, color: 'white',
+                  borderRadius: '8px', padding: '8px 20px',
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 600,
+                  letterSpacing: '0.03em', cursor: 'pointer',
+                }}
+              >
+                Upgrade to Premium ↗
               </div>
             </div>
           </div>
+          )}
 
           <div style={{
             height: '100%', overflowY: 'auto',
@@ -1527,12 +1635,12 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
               }}>
                 {/* Table header */}
                 <div style={{
-                  display: 'grid', gridTemplateColumns: '1.6fr 1.2fr 1.2fr 0.8fr 1.4fr',
+                  display: 'grid', gridTemplateColumns: '1.6fr 1.2fr 1.2fr 0.8fr 1.4fr 1fr',
                   padding: '8px 14px',
                   backgroundColor: '#F0F1F3',
                   borderBottom: `1px solid ${T.border}`,
                 }}>
-                  {['Name', 'Company', 'Role', 'Date Met', 'Follow-up'].map(h => (
+                  {['Name', 'Company', 'Role', 'Date Met', 'Follow-up', ''].map(h => (
                     <span key={h} style={{
                       fontFamily: 'DM Sans, sans-serif', fontSize: '0.62rem',
                       fontWeight: 700, color: T.secondary, letterSpacing: '0.08em',
@@ -1544,7 +1652,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 </div>
                 {NETWORKING_CONTACTS.map((c, i) => (
                   <div key={i} style={{
-                    display: 'grid', gridTemplateColumns: '1.6fr 1.2fr 1.2fr 0.8fr 1.4fr',
+                    display: 'grid', gridTemplateColumns: '1.6fr 1.2fr 1.2fr 0.8fr 1.4fr 1fr',
                     padding: 'clamp(9px, 1.6vh, 13px) 14px',
                     borderBottom: i < NETWORKING_CONTACTS.length - 1 ? `1px solid ${T.border}` : 'none',
                     alignItems: 'center',
@@ -1554,6 +1662,24 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                     <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: T.secondary }}>{c.role}</span>
                     <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: T.secondary }}>{c.dateMet}</span>
                     <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: c.statusColor, fontWeight: 500 }}>{c.status}</span>
+                    <button
+                      onClick={() => openEmailModal(c)}
+                      style={{
+                        background: T.surface,
+                        border: `1px solid ${T.border}`,
+                        borderRadius: '6px',
+                        padding: '4px 8px',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontSize: '0.64rem', fontWeight: 500,
+                        color: T.navy, cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                        transition: 'background 150ms ease',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = T.border }}
+                      onMouseLeave={e => { e.currentTarget.style.background = T.surface }}
+                    >
+                      ✉ Draft Thanks
+                    </button>
                   </div>
                 ))}
               </div>
@@ -1674,6 +1800,102 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
       >
         ↺ Restart Demo
       </button>
+
+      {/* ── PET MODAL ───────────────────────────────────────── */}
+      {/* ── THANK-YOU EMAIL MODAL ───────────────────────────── */}
+      {emailModal && (
+        <div
+          onClick={() => setEmailModal(null)}
+          style={{
+            position: 'absolute', inset: 0, backgroundColor: T.overlay,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 100, animation: 'fade-in 200ms ease-out forwards',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              backgroundColor: T.bg, border: `1px solid ${T.border}`,
+              borderRadius: '14px', padding: 'clamp(20px, 4vw, 28px)',
+              maxWidth: '480px', width: '92%',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
+              animation: 'slide-up-fade 300ms ease-out forwards',
+              display: 'flex', flexDirection: 'column', gap: '14px',
+            }}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <p style={{
+                fontFamily: 'Playfair Display, serif', fontWeight: 600,
+                fontSize: '1.05rem', color: T.navy, margin: 0,
+              }}>
+                ✉ Draft Thank-You Email
+              </p>
+              <button
+                onClick={() => setEmailModal(null)}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: '1rem', color: T.secondary, lineHeight: 1,
+                  padding: '2px 6px',
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            {/* Sub-label */}
+            <p style={{
+              fontFamily: 'DM Sans, sans-serif', fontSize: '0.76rem',
+              color: T.secondary, margin: 0,
+            }}>
+              To: <strong style={{ color: T.navy }}>{emailModal.name}</strong> · {emailModal.company}
+            </p>
+            {/* Editable textarea */}
+            <textarea
+              value={emailText}
+              onChange={e => { setEmailText(e.target.value); setEmailCopied(false) }}
+              rows={9}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem',
+                color: T.navy, lineHeight: 1.6,
+                border: `1px solid ${T.borderMid}`, borderRadius: '8px',
+                padding: '10px 12px', resize: 'vertical',
+                outline: 'none', backgroundColor: T.surface,
+              }}
+            />
+            {/* Action buttons */}
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setEmailModal(null)}
+                style={{
+                  background: 'none', border: `1px solid ${T.borderMid}`,
+                  borderRadius: '6px', padding: '7px 18px',
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem',
+                  color: T.secondary, cursor: 'pointer',
+                }}
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(emailText).catch(() => {})
+                  setEmailCopied(true)
+                  setTimeout(() => setEmailCopied(false), 2000)
+                }}
+                style={{
+                  backgroundColor: emailCopied ? '#1DAF72' : T.navy,
+                  border: 'none', borderRadius: '6px', padding: '7px 18px',
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem',
+                  fontWeight: 600, color: 'white', cursor: 'pointer',
+                  transition: 'background-color 200ms ease',
+                }}
+              >
+                {emailCopied ? '✓ Copied!' : 'Copy to Clipboard'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── PET MODAL ───────────────────────────────────────── */}
       {showPetModal && (

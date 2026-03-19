@@ -34,6 +34,9 @@
   --t-cat-bg-a:    #EFF6FF;
   --t-cat-bg-r:    #FEF2F2;
   --t-cat-bg-p:    #F0FDF4;
+  --t-pri-bg-r:    #FEF2F2;
+  --t-pri-bg-y:    #FFFBEB;
+  --t-pri-bg-g:    #F0FDF4;
 }
 
 /* ── Premium mode overrides ───────────────────────── */
@@ -53,6 +56,9 @@
   --t-cat-bg-a:    rgba(79,142,247,0.15);
   --t-cat-bg-r:    rgba(232,69,69,0.15);
   --t-cat-bg-p:    rgba(29,175,114,0.15);
+  --t-pri-bg-r:    rgba(232,69,69,0.18);
+  --t-pri-bg-y:    rgba(245,158,11,0.18);
+  --t-pri-bg-g:    rgba(29,175,114,0.18);
 }
 
 /* ===========================

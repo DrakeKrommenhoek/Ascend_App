@@ -147,7 +147,7 @@ const GAME_PLAN_ITEMS_BASE = [
   { priority: 'green',  label: 'CPD Office Hours',            detail: 'Today · 2pm',           cat: 'recruiting' },
 ]
 const PRIORITY_COLOR = { red: '#E84545', yellow: '#D97706', green: '#1DAF72' }
-const PRIORITY_BG    = { red: '#FEF2F2', yellow: '#FFFBEB', green: '#F0FDF4' }
+const PRIORITY_BG    = { red: 'var(--t-pri-bg-r)', yellow: 'var(--t-pri-bg-y)', green: 'var(--t-pri-bg-g)' }
 
 const CANVAS_ASSIGNMENTS = [
   { course: 'FIN 401',  title: 'Problem Set 4',    due: 'Mar 18' },
@@ -270,7 +270,7 @@ function WhatWouldYouCut({ events, name }) {
             <div key={i} style={{
               display: 'flex', alignItems: 'center', gap: '12px',
               padding: '10px 14px',
-              backgroundColor: isFlexible ? '#FFFBEB' : CAT_BG[ev.cat],
+              backgroundColor: isFlexible ? 'var(--t-pri-bg-y)' : CAT_BG[ev.cat],
               borderRadius: '8px',
               border: `1px solid ${isFlexible ? '#FDE68A' : CAT_COLOR[ev.cat]}33`,
               transition: 'background-color 200ms ease',
@@ -301,7 +301,7 @@ function WhatWouldYouCut({ events, name }) {
                   padding: '5px 12px',
                   borderRadius: '16px',
                   border: `1px solid ${isFlexible ? '#FDE68A' : T.borderMid}`,
-                  backgroundColor: isFlexible ? '#FEF3C7' : T.surface,
+                  backgroundColor: isFlexible ? 'var(--t-pri-bg-y)' : T.surface,
                   fontFamily: 'DM Sans, sans-serif',
                   fontSize: '0.68rem', fontWeight: 600,
                   color: isFlexible ? '#D97706' : T.navy,
@@ -370,7 +370,7 @@ function DayDetailPanel({ day, name, onClose }) {
             <div style={{
               display: 'flex', alignItems: 'flex-start', gap: '8px',
               padding: '9px 12px', marginBottom: '10px',
-              backgroundColor: '#FFFBEB', borderRadius: '7px',
+              backgroundColor: 'var(--t-pri-bg-y)', borderRadius: '7px',
               border: '1px solid #FDE68A',
             }}>
               <span style={{ fontSize: '0.9rem', flexShrink: 0 }}>⚠️</span>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ascend — Get Early Access</title>
+  <link rel="icon" href="/ascend-icon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #0D1B3E;
+      --navy-mid:  #1B3A6B;
+      --navy-light:#2A5298;
+      --gold:      #D97706;
+      --surface:   #F5F6F8;
+      --border:    #E5E7EB;
+      --secondary: #6B7280;
+      --white:     #FFFFFF;
+    }
+
+    body {
+      min-height: 100dvh;
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(160deg, #0D1B3E 0%, #1B3A6B 55%, #2A5298 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+
+    /* ── Card ─────────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: clamp(28px, 6vw, 44px) clamp(24px, 5vw, 40px);
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.28);
+    }
+
+    /* ── Brand header ─────────────────────────────────── */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .brand img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Headline ─────────────────────────────────────── */
+    .headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 5vw, 1.75rem);
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .subtext {
+      font-size: 0.88rem;
+      color: var(--secondary);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .subtext strong {
+      color: var(--navy-mid);
+    }
+
+    /* ── Form ─────────────────────────────────────────── */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    input, select {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--navy);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 150ms ease, background 150ms ease;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    input::placeholder { color: #9CA3AF; }
+    input:focus, select:focus {
+      border-color: var(--navy-mid);
+      background: var(--white);
+    }
+    .select-wrap {
+      position: relative;
+    }
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary);
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ── Submit button ────────────────────────────────── */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background 200ms ease, transform 100ms ease;
+      margin-bottom: 14px;
+    }
+    .btn:hover  { background: var(--navy-mid); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; cursor: default; }
+
+    .fine-print {
+      font-size: 0.7rem;
+      color: var(--secondary);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ── Success state ────────────────────────────────── */
+    .success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 12px 0 4px;
+      gap: 14px;
+    }
+    .success.show { display: flex; }
+    .form-body.hide { display: none; }
+
+    .check-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #F0FDF4;
+      border: 2px solid #1DAF72;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+    .success-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .success-msg {
+      font-size: 0.86rem;
+      color: var(--secondary);
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    /* ── Footer tagline ───────────────────────────────── */
+    .tagline {
+      margin-top: 20px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- Brand -->
+    <div class="brand">
+      <img src="/ascend-icon.png" alt="Ascend" />
+      <span class="brand-name">Ascend</span>
+    </div>
+
+    <!-- Form body -->
+    <div class="form-body" id="formBody">
+      <h1 class="headline">Get early access.</h1>
+      <p class="subtext">
+        <strong>Classes. Recruiting. Life.</strong> Finally in one place.<br />
+        Join the waitlist and be first to know when we launch at your school.
+      </p>
+
+      <form id="signupForm" novalidate>
+        <div class="form-group">
+          <div class="row">
+            <div class="field">
+              <label for="firstName">First Name</label>
+              <input id="firstName" name="firstName" type="text" placeholder="Alex" required />
+            </div>
+            <div class="field">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" name="lastName" type="text" placeholder="Johnson" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="alex@university.edu" required />
+          </div>
+
+          <div class="field">
+            <label for="school">School</label>
+            <input id="school" name="school" type="text" placeholder="Washington & Lee, UVA, …" required />
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="gradYear">Grad Year</label>
+              <div class="select-wrap">
+                <select id="gradYear" name="gradYear">
+                  <option value="">Year</option>
+                  <option>2025</option>
+                  <option>2026</option>
+                  <option>2027</option>
+                  <option>2028</option>
+                  <option>2029</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="interest">Track</label>
+              <div class="select-wrap">
+                <select id="interest" name="interest">
+                  <option value="">Focus</option>
+                  <option>Finance / IB</option>
+                  <option>Consulting</option>
+                  <option>Tech / SWE</option>
+                  <option>Law</option>
+                  <option>Medicine</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn" type="submit" id="submitBtn">Join the Waitlist →</button>
+        <p class="fine-print">No spam. Unsubscribe anytime. Early users get free Pro access.</p>
+      </form>
+    </div>
+
+    <!-- Success state -->
+    <div class="success" id="successState">
+      <div class="check-circle">✓</div>
+      <p class="success-title">You're on the list.</p>
+      <p class="success-msg">
+        We'll reach out as soon as Ascend is available at your school.<br />
+        Early users unlock <strong style="color:#0D1B3E">Pro for free</strong>.
+      </p>
+    </div>
+  </div>
+
+  <p class="tagline">ascend-app-one.vercel.app</p>
+
+  <script>
+    const form      = document.getElementById('signupForm')
+    const formBody  = document.getElementById('formBody')
+    const success   = document.getElementById('successState')
+    const submitBtn = document.getElementById('submitBtn')
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+
+      const firstName = document.getElementById('firstName').value.trim()
+      const lastName  = document.getElementById('lastName').value.trim()
+      const email     = document.getElementById('email').value.trim()
+      const school    = document.getElementById('school').value.trim()
+
+      if (!firstName || !email || !school) {
+        // Shake the empty required fields
+        [['firstName', firstName], ['email', email], ['school', school]].forEach(([id, val]) => {
+          if (!val) {
+            const el = document.getElementById(id)
+            el.style.borderColor = '#E84545'
+            el.focus()
+          }
+        })
+        return
+      }
+
+      submitBtn.disabled = true
+      submitBtn.textContent = 'Submitting…'
+
+      // Collect form data
+      const payload = {
+        firstName,
+        lastName,
+        email,
+        school,
+        gradYear:  document.getElementById('gradYear').value,
+        interest:  document.getElementById('interest').value,
+        timestamp: new Date().toISOString(),
+      }
+
+      // Try Formspree if configured, otherwise just show success
+      try {
+        const endpoint = 'https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID'
+        if (!endpoint.includes('REPLACE')) {
+          await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+        }
+      } catch (_) { /* fail silently — still show success */ }
+
+      formBody.classList.add('hide')
+      success.classList.add('show')
+    })
+
+    // Clear red border on input
+    document.querySelectorAll('input').forEach(el => {
+      el.addEventListener('input', () => { el.style.borderColor = '' })
+    })
+  </script>
+</body>
+</html>

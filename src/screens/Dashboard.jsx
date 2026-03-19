@@ -2,20 +2,28 @@ import { useState, useEffect, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { ARCHETYPES, getPetMessage } from '../data/archetypes.js'
 
-// ── Light theme tokens ────────────────────────────────────────────────────────
+// ── Theme tokens — CSS custom properties (free/premium toggled via .premium-mode class)
 const T = {
-  bg:        '#FFFFFF',
-  surface:   '#F5F6F8',
-  border:    '#E5E7EB',
-  borderMid: '#D1D5DB',
-  navy:      '#1B3A6B',
-  navyLight: '#2A5298',
-  secondary: '#6B7280',
-  overlay:   'rgba(0,0,0,0.28)',
+  bg:         'var(--t-bg)',
+  surface:    'var(--t-surface)',
+  border:     'var(--t-border)',
+  borderMid:  'var(--t-border-mid)',
+  navy:       'var(--t-text)',        // primary text
+  navyLight:  'var(--t-text-soft)',
+  secondary:  'var(--t-secondary)',
+  overlay:    'var(--t-overlay)',
+  accent:     'var(--t-accent)',      // active indicators & button fills
+  accentText: 'var(--t-accent-text)', // text on accent backgrounds
+  tableHd:    'var(--t-table-hd)',    // table header bg
+  navyTint:   'var(--t-navy-tint)',   // subtle tinted bg strip
 }
 
 const CAT_COLOR = { academic: '#4F8EF7', recruiting: '#E84545', personal: '#1DAF72' }
-const CAT_BG    = { academic: '#EFF6FF', recruiting: '#FEF2F2', personal: '#F0FDF4' }
+const CAT_BG    = {
+  academic:   'var(--t-cat-bg-a)',
+  recruiting: 'var(--t-cat-bg-r)',
+  personal:   'var(--t-cat-bg-p)',
+}
 
 // ── Calendar / event data ─────────────────────────────────────────────────────
 const MARCH_GRID = [
@@ -899,14 +907,20 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
   const progressMsg  = getPetMessage(archetypeId, humorStyle, 'progressComment', name)
   const TABS = ['master', 'canvas', 'recruiting', 'personal']
 
+  const themeTransition = 'background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease'
+
   return (
-    <div style={{
-      width: '100%', height: '100%',
-      backgroundColor: T.bg,
-      display: 'flex', flexDirection: 'column',
-      overflow: 'hidden', position: 'relative',
-      animation: 'fade-in 400ms ease-out forwards',
-    }}>
+    <div
+      className={isPremium ? 'premium-mode' : ''}
+      style={{
+        width: '100%', height: '100%',
+        backgroundColor: T.bg,
+        display: 'flex', flexDirection: 'column',
+        overflow: 'hidden', position: 'relative',
+        animation: 'fade-in 400ms ease-out forwards',
+        transition: themeTransition,
+      }}
+    >
 
       {/* ── "YOU'RE AHEAD" BANNER ──────────────────────────── */}
       {showBanner && (
@@ -933,6 +947,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
         flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: 'clamp(10px, 2vh, 16px) clamp(16px, 3vw, 28px)',
         borderBottom: `1px solid ${T.border}`,
+        transition: themeTransition,
       }}>
         <div>
           <p style={{
@@ -961,13 +976,15 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
           onClick={() => setShowPetModal(true)}
           style={{
             display: 'flex', alignItems: 'center', gap: '10px',
-            backgroundColor: `${archetype.color}12`,
-            border: `1px solid ${archetype.color}40`,
+            backgroundColor: isPremium ? 'rgba(245,158,11,0.08)' : `${archetype.color}12`,
+            border: isPremium ? '1px solid rgba(245,158,11,0.25)' : `1px solid ${archetype.color}40`,
+            borderLeft: isPremium ? '4px solid #F59E0B' : `1px solid ${archetype.color}40`,
             borderRadius: '10px', padding: '8px 12px',
-            cursor: 'pointer', transition: 'background-color 150ms ease',
+            cursor: 'pointer',
+            transition: `background-color 0.4s ease, border-color 0.4s ease`,
           }}
-          onMouseEnter={e => { e.currentTarget.style.backgroundColor = `${archetype.color}20` }}
-          onMouseLeave={e => { e.currentTarget.style.backgroundColor = `${archetype.color}12` }}
+          onMouseEnter={e => { e.currentTarget.style.backgroundColor = isPremium ? 'rgba(245,158,11,0.14)' : `${archetype.color}20` }}
+          onMouseLeave={e => { e.currentTarget.style.backgroundColor = isPremium ? 'rgba(245,158,11,0.08)' : `${archetype.color}12` }}
         >
           <div style={{ position: 'relative' }}>
             <img src={archetype.image} alt={archetype.animal}
@@ -1006,6 +1023,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
         flexShrink: 0, display: 'flex', justifyContent: 'center',
         padding: '8px 0 6px',
         borderBottom: `1px solid ${T.border}`,
+        transition: themeTransition,
       }}>
         <div
           onClick={togglePremium}
@@ -1014,10 +1032,12 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             display: 'flex', alignItems: 'center',
             width: '196px', height: '30px',
             backgroundColor: T.surface,
-            border: `1px solid ${T.borderMid}`,
+            border: isPremium ? '1px solid rgba(245,158,11,0.4)' : `1px solid ${T.borderMid}`,
             borderRadius: '15px',
             cursor: 'pointer',
             userSelect: 'none',
+            boxShadow: isPremium ? '0 0 0 2px rgba(245,158,11,0.15)' : 'none',
+            transition: 'background-color 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease',
           }}
         >
           {/* Sliding pill */}
@@ -1026,11 +1046,11 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             left: '3px',
             width: 'calc(50% - 3px)',
             height: 'calc(100% - 6px)',
-            backgroundColor: 'white',
+            backgroundColor: isPremium ? '#F59E0B' : 'white',
             borderRadius: '12px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+            boxShadow: isPremium ? '0 1px 6px rgba(245,158,11,0.4)' : '0 1px 4px rgba(0,0,0,0.12)',
             transform: isPremium ? 'translateX(100%)' : 'translateX(0)',
-            transition: 'transform 200ms ease',
+            transition: 'transform 200ms ease, background-color 0.3s ease, box-shadow 0.3s ease',
           }} />
           {/* Labels */}
           <span style={{
@@ -1038,7 +1058,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             flex: 1, textAlign: 'center',
             fontFamily: 'DM Sans, sans-serif',
             fontSize: '0.72rem', fontWeight: 600,
-            color: !isPremium ? T.navy : T.secondary,
+            color: !isPremium ? T.accent : T.secondary,
             transition: 'color 200ms ease',
           }}>
             Free
@@ -1048,7 +1068,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             flex: 1, textAlign: 'center',
             fontFamily: 'DM Sans, sans-serif',
             fontSize: '0.72rem', fontWeight: 600,
-            color: isPremium ? '#D97706' : T.secondary,
+            color: isPremium ? '#0D1B3E' : T.secondary,
             transition: 'color 200ms ease',
           }}>
             Premium
@@ -1061,19 +1081,20 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
         flexShrink: 0, display: 'flex', position: 'relative',
         borderBottom: `1px solid ${T.border}`,
         padding: `0 clamp(16px, 3vw, 28px)`,
+        transition: themeTransition,
       }}>
         {TABS.map(tab => (
           <button key={tab}
             onClick={() => setActiveTab(tab)}
             style={{
               background: 'none', border: 'none',
-              borderBottom: activeTab === tab ? `2px solid ${T.navy}` : '2px solid transparent',
-              color: activeTab === tab ? T.navy : T.secondary,
+              borderBottom: activeTab === tab ? `2px solid ${T.accent}` : '2px solid transparent',
+              color: activeTab === tab ? T.accent : T.secondary,
               fontFamily: 'DM Sans, sans-serif', fontWeight: 500,
               fontSize: 'clamp(0.78rem, 1.4vw, 0.88rem)', letterSpacing: '0.03em',
               padding: 'clamp(8px, 1.5vh, 12px) clamp(12px, 2vw, 20px)',
               cursor: 'pointer', textTransform: 'capitalize',
-              transition: 'color 150ms ease, border-color 150ms ease',
+              transition: `background-color 0.4s ease, color 150ms ease, border-color 150ms ease`,
               marginBottom: '-1px',
               display: 'flex', alignItems: 'center', gap: '5px',
             }}
@@ -1100,8 +1121,9 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 {!isPremium && (
                   <span style={{
                     fontSize: '0.5rem', fontWeight: 700,
-                    backgroundColor: T.navy, color: 'white',
+                    backgroundColor: T.accent, color: T.accentText,
                     borderRadius: '3px', padding: '1px 4px', lineHeight: 1.5,
+                    transition: themeTransition,
                   }}>
                     PRO
                   </span>
@@ -1113,7 +1135,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
         {showProTooltip && (
           <div style={{
             position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
-            backgroundColor: T.navy, color: 'white',
+            backgroundColor: T.accent, color: T.accentText,
             borderRadius: '8px', padding: '8px 16px',
             fontSize: '0.72rem', fontFamily: 'DM Sans, sans-serif',
             whiteSpace: 'nowrap', zIndex: 100, marginTop: '6px',
@@ -1125,7 +1147,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
       </div>
 
       {/* ── CONTENT ─────────────────────────────────────────── */}
-      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+      <div style={{ flex: 1, overflow: 'hidden', position: 'relative', transition: themeTransition }}>
 
         {/* ── MASTER ──────────────────────────────────────── */}
         {activeTab === 'master' && (
@@ -1197,9 +1219,10 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
               flexShrink: 0,
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '8px 14px',
-              backgroundColor: `${T.navy}08`,
+              backgroundColor: T.navyTint,
               borderRadius: '7px',
               border: `1px solid ${T.border}`,
+              transition: themeTransition,
             }}>
               <span style={{ fontSize: '0.8rem', flexShrink: 0 }}>⚡</span>
               <p style={{
@@ -1233,8 +1256,8 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                         if (next === 'day' && !selectedDay) setSelectedDay(TODAY)
                       }}
                       style={{
-                        background: calView === v.toLowerCase() ? T.navy : 'transparent',
-                        color: calView === v.toLowerCase() ? 'white' : T.secondary,
+                        background: calView === v.toLowerCase() ? T.accent : 'transparent',
+                        color: calView === v.toLowerCase() ? T.accentText : T.secondary,
                         border: 'none', borderRadius: '5px',
                         fontFamily: 'DM Sans, sans-serif',
                         fontWeight: 600, fontSize: '0.72rem',
@@ -1430,7 +1453,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 </p>
                 <div style={{ height: '6px', backgroundColor: T.border, borderRadius: '3px', overflow: 'hidden' }}>
                   <div style={{
-                    height: '100%', backgroundColor: T.navy,
+                    height: '100%', backgroundColor: T.accent,
                     borderRadius: '3px', width: '70%',
                     animation: 'progress-fill 800ms ease-out forwards',
                   }} />
@@ -1487,7 +1510,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                   }}
                   style={{
                     width: '100%', padding: '10px', borderRadius: '8px',
-                    backgroundColor: T.navy, color: 'white', border: 'none',
+                    backgroundColor: T.accent, color: T.accentText, border: 'none',
                     fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '0.82rem',
                     cursor: 'pointer', letterSpacing: '0.03em',
                   }}
@@ -1572,7 +1595,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 onClick={togglePremium}
                 style={{
                   display: 'inline-block',
-                  backgroundColor: T.navy, color: 'white',
+                  backgroundColor: T.accent, color: T.accentText,
                   borderRadius: '8px', padding: '8px 20px',
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 600,
                   letterSpacing: '0.03em', cursor: 'pointer',
@@ -1637,7 +1660,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 <div style={{
                   display: 'grid', gridTemplateColumns: '1.6fr 1.2fr 1.2fr 0.8fr 1.4fr 1fr',
                   padding: '8px 14px',
-                  backgroundColor: '#F0F1F3',
+                  backgroundColor: T.tableHd,
                   borderBottom: `1px solid ${T.border}`,
                 }}>
                   {['Name', 'Company', 'Role', 'Date Met', 'Follow-up', ''].map(h => (
@@ -1883,11 +1906,11 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                   setTimeout(() => setEmailCopied(false), 2000)
                 }}
                 style={{
-                  backgroundColor: emailCopied ? '#1DAF72' : T.navy,
+                  backgroundColor: emailCopied ? '#1DAF72' : T.accent,
                   border: 'none', borderRadius: '6px', padding: '7px 18px',
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem',
-                  fontWeight: 600, color: 'white', cursor: 'pointer',
-                  transition: 'background-color 200ms ease',
+                  fontWeight: 600, color: emailCopied ? 'white' : T.accentText, cursor: 'pointer',
+                  transition: 'background-color 200ms ease, color 200ms ease',
                 }}
               >
                 {emailCopied ? '✓ Copied!' : 'Copy to Clipboard'}

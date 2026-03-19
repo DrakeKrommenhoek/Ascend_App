@@ -17,6 +17,42 @@
   --success: #34D399;
   --warning: #FBBF24;
   --danger: #F87171;
+
+  /* ── Dashboard theme tokens (Free mode defaults) ── */
+  --t-bg:          #FFFFFF;
+  --t-surface:     #F5F6F8;
+  --t-border:      #E5E7EB;
+  --t-border-mid:  #D1D5DB;
+  --t-text:        #1B3A6B;
+  --t-text-soft:   #2A5298;
+  --t-secondary:   #6B7280;
+  --t-overlay:     rgba(0,0,0,0.28);
+  --t-accent:      #1B3A6B;
+  --t-accent-text: #FFFFFF;
+  --t-table-hd:    #F0F1F3;
+  --t-navy-tint:   rgba(27,58,107,0.05);
+  --t-cat-bg-a:    #EFF6FF;
+  --t-cat-bg-r:    #FEF2F2;
+  --t-cat-bg-p:    #F0FDF4;
+}
+
+/* ── Premium mode overrides ───────────────────────── */
+.premium-mode {
+  --t-bg:          #0D1B3E;
+  --t-surface:     #152347;
+  --t-border:      rgba(255,255,255,0.08);
+  --t-border-mid:  rgba(255,255,255,0.14);
+  --t-text:        #FFFFFF;
+  --t-text-soft:   rgba(255,255,255,0.8);
+  --t-secondary:   rgba(255,255,255,0.55);
+  --t-overlay:     rgba(0,0,0,0.55);
+  --t-accent:      #F59E0B;
+  --t-accent-text: #0D1B3E;
+  --t-table-hd:    rgba(255,255,255,0.06);
+  --t-navy-tint:   rgba(245,158,11,0.08);
+  --t-cat-bg-a:    rgba(79,142,247,0.15);
+  --t-cat-bg-r:    rgba(232,69,69,0.15);
+  --t-cat-bg-p:    rgba(29,175,114,0.15);
 }
 
 /* ===========================

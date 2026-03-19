@@ -1,3 +1,12 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/ascend-signup",
+      "destination": "/ascend-signup.html"
+    },
+    {
+      "source": "/((?!ascend-signup).*)",
+      "destination": "/index.html"
+    }
+  ]
 }

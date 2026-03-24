@@ -1,35 +1,14 @@
 import { useState, useCallback } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
-import Intro       from './screens/Intro.jsx'
-import NameCapture from './screens/NameCapture.jsx'
-import Quiz        from './screens/Quiz.jsx'
-import Reveal      from './screens/Reveal.jsx'
-import PetIntro    from './screens/PetIntro.jsx'
-// Dashboard lives at /dashboard route — not rendered inline here
-// import Dashboard   from './screens/Dashboard.jsx'
-import { useAuth } from './contexts/AuthContext'
-
-// Simple ProtectedRoute — redirects to / if not authenticated
-function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth()
-
-  if (loading) {
-    return (
-      <div
-        className="w-full h-full flex items-center justify-center"
-        style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-      >
-        Loading…
-      </div>
-    )
-  }
-
-  if (!user) {
-    return <Navigate to="/" replace />
-  }
-
-  return children
-}
+import Intro          from './screens/Intro.jsx'
+import NameCapture    from './screens/NameCapture.jsx'
+import Quiz           from './screens/Quiz.jsx'
+import Reveal         from './screens/Reveal.jsx'
+import PetIntro       from './screens/PetIntro.jsx'
+import Login          from './screens/Login.jsx'
+import SignUp         from './screens/SignUp.jsx'
+import Dashboard      from './screens/Dashboard.jsx'
+import ProtectedRoute from './components/auth/ProtectedRoute.jsx'
 
 // Onboarding state machine — Intro → NameCapture → Quiz → Reveal → PetIntro → /signup
 function Onboarding() {
@@ -84,16 +63,16 @@ export default function App() {
       {/* Onboarding flow */}
       <Route path="/" element={<Onboarding />} />
 
-      {/* Auth screens — placeholders until Task 2 */}
-      <Route path="/login" element={<div>Login screen coming in Task 2</div>} />
-      <Route path="/signup" element={<div>Signup coming in Task 2</div>} />
+      {/* Auth screens */}
+      <Route path="/login"  element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
 
-      {/* Protected routes — placeholders until later tasks */}
+      {/* Protected routes */}
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <div>Dashboard coming</div>
+            <Dashboard />
           </ProtectedRoute>
         }
       />
@@ -101,7 +80,7 @@ export default function App() {
         path="/settings"
         element={
           <ProtectedRoute>
-            <div>Settings coming</div>
+            <div style={{ color: 'white', padding: '2rem' }}>Settings coming in Task 8</div>
           </ProtectedRoute>
         }
       />

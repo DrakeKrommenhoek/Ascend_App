@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { ARCHETYPES, getPetMessage } from '../data/archetypes.js'
 import { useNavigate } from 'react-router-dom'
-import { useCalendarEvents } from '../hooks/useCalendarEvents'
 import { useIntegrations } from '../hooks/useIntegrations'
 
 // ── Theme tokens — CSS custom properties (free/premium toggled via .premium-mode class)
@@ -856,9 +855,8 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
   const bannerTimerRef = useRef(null)
 
   const navigate = useNavigate()
-  const { connected } = useCalendarEvents()
   const { integrations } = useIntegrations()
-  const anyConnected = connected.google || connected.microsoft || connected.canvas
+  const anyConnected = !!(integrations.google || integrations.microsoft || integrations.canvas)
 
   const hour = new Date().getHours()
   const timeGreeting = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening'

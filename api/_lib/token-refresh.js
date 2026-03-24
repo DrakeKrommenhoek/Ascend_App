@@ -16,11 +16,19 @@ async function getValidAccessToken(uid, provider, integration) {
   const fiveMinutesFromNow = Date.now() + 5 * 60 * 1000;
   const expiresAtMs = expiresAt?.toMillis ? expiresAt.toMillis() : expiresAt;
 
+  if (!expiresAtMs) {
+    console.warn(`Missing expiresAt for ${provider} integration, forcing token refresh`);
+  }
+
   if (expiresAtMs > fiveMinutesFromNow) {
     return accessToken; // Token is still valid
   }
 
   // Token is expired or expiring soon — refresh it
+  if (!refreshToken || typeof refreshToken !== 'string') {
+    throw new Error(`Missing refresh token for ${provider}. Please reconnect.`);
+  }
+
   let tokenEndpoint, params;
 
   if (provider === 'google') {
@@ -53,7 +61,9 @@ async function getValidAccessToken(uid, provider, integration) {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Token refresh failed for ${provider}: ${error}`);
+    // Log full error for debugging (server-side only, not returned to client)
+    console.error(`Token refresh failed for ${provider}:`, error.substring(0, 200));
+    throw new Error(`Token refresh failed for ${provider}: OAuth endpoint returned an error`);
   }
 
   const data = await response.json();

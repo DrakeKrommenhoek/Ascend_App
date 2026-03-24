@@ -18,6 +18,35 @@ const ARCHETYPE_LABELS = {
   bear:  'Bear — Steady & Dependable',
 }
 
+/* ── Section divider helper ── */
+function SectionLabel({ label }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        margin: '2rem 0 1rem',
+      }}
+    >
+      <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+      <span
+        style={{
+          color: 'var(--text-secondary)',
+          fontSize: '0.75rem',
+          fontWeight: '600',
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+    </div>
+  )
+}
+
 export default function Settings() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -72,6 +101,13 @@ export default function Settings() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])   // run once on mount
+
+  /* ── Auto-dismiss urlError after 6 s ── */
+  useEffect(() => {
+    if (!urlError) return
+    const timer = setTimeout(() => setUrlError(null), 6000)
+    return () => clearTimeout(timer)
+  }, [urlError])
 
   /* ── Connect / Disconnect handlers ── */
 
@@ -179,35 +215,6 @@ export default function Settings() {
     } catch (err) {
       console.error('Sign out error:', err)
     }
-  }
-
-  /* ── Section divider helper ── */
-  function SectionLabel({ label }) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-          margin: '2rem 0 1rem',
-        }}
-      >
-        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-        <span
-          style={{
-            color: 'var(--text-secondary)',
-            fontSize: '0.75rem',
-            fontWeight: '600',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {label}
-        </span>
-        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-      </div>
-    )
   }
 
   return (
@@ -354,11 +361,7 @@ export default function Settings() {
               logo={gcalLogo}
               description="Sync your Google Calendar events to your Ascend dashboard."
               connected={!!integrations.google}
-              connectedLabel={
-                integrations.google
-                  ? (integrations.google.email ? `Connected as ${integrations.google.email}` : 'Connected')
-                  : null
-              }
+              connectedLabel="Connected"
               onConnect={handleGoogleConnect}
               onDisconnect={handleGoogleDisconnect}
               loading={googleLoading}
@@ -370,11 +373,7 @@ export default function Settings() {
               logo={outlookLogo}
               description="Sync your Microsoft Outlook or Office 365 calendar."
               connected={!!integrations.microsoft}
-              connectedLabel={
-                integrations.microsoft
-                  ? (integrations.microsoft.email ? `Connected as ${integrations.microsoft.email}` : 'Connected')
-                  : null
-              }
+              connectedLabel="Connected"
               onConnect={handleMicrosoftConnect}
               onDisconnect={handleMicrosoftDisconnect}
               loading={microsoftLoading}

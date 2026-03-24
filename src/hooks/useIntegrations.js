@@ -21,6 +21,7 @@ export function useIntegrations() {
       return;
     }
 
+    setLoading(true);
     const integrationsRef = collection(db, 'users', user.uid, 'integrations');
 
     const unsubscribe = onSnapshot(

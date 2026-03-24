@@ -22,7 +22,7 @@ export function useCalendarEvents() {
   const [errors, setErrors] = useState({ google: null, microsoft: null, canvas: null });
   const [connected, setConnected] = useState({ google: false, microsoft: false, canvas: false });
 
-  const fetchEvents = useCallback(async () => {
+  const fetchEvents = useCallback(async (isMounted = true) => {
     if (!user) return;
 
     setLoading(true);
@@ -84,6 +84,7 @@ export function useCalendarEvents() {
       return new Date(a.start) - new Date(b.start);
     });
 
+    if (!isMounted) return;
     setEvents(allEvents);
     setErrors(newErrors);
     setConnected(newConnected);
@@ -93,9 +94,13 @@ export function useCalendarEvents() {
   // Auto-fetch when user changes
   useEffect(() => {
     if (user) {
-      fetchEvents();
+      let isMounted = true;
+      fetchEvents(isMounted);
+      return () => { isMounted = false; };
     } else {
       setEvents([]);
+      setLoading(false);
+      setErrors({ google: null, microsoft: null, canvas: null });
       setConnected({ google: false, microsoft: false, canvas: false });
     }
   }, [user, fetchEvents]);

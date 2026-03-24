@@ -16,6 +16,11 @@ export default function SignUp() {
   const location  = useLocation()
   const { signup } = useAuth()
 
+  const [email, setEmail]       = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError]       = useState('')
+  const [loading, setLoading]   = useState(false)
+
   // If no location state, redirect back to onboarding
   const state = location.state
   if (!state || !state.name) {
@@ -23,11 +28,6 @@ export default function SignUp() {
   }
 
   const { name, archetype, humorStyle } = state
-
-  const [email, setEmail]       = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError]       = useState('')
-  const [loading, setLoading]   = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()

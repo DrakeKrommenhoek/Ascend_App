@@ -22,9 +22,11 @@ module.exports = async (req, res) => {
     .collection('users').doc(uid)
     .collection('integrations').doc('microsoft');
 
-  const doc = await integrationRef.get();
-  if (doc.exists) {
+  try {
     await integrationRef.delete();
+  } catch (err) {
+    console.error('Failed to delete Microsoft integration from Firestore:', err.message);
+    return res.status(500).json({ error: 'Failed to disconnect' });
   }
 
   res.json({ success: true });

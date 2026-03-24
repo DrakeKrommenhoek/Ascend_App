@@ -20,7 +20,13 @@ module.exports = async (req, res) => {
     .collection('users').doc(uid)
     .collection('integrations').doc('microsoft');
 
-  const doc = await integrationRef.get();
+  let doc;
+  try {
+    doc = await integrationRef.get();
+  } catch (err) {
+    console.error('Failed to read Microsoft integration from Firestore:', err.message);
+    return res.status(500).json({ error: 'Failed to fetch events' });
+  }
   if (!doc.exists) {
     return res.json({ events: [], connected: false });
   }
@@ -61,6 +67,10 @@ module.exports = async (req, res) => {
   }
 
   if (!calendarRes.ok) {
+    if (calendarRes.status === 401) {
+      // Token was revoked or expired beyond refresh — prompt user to reconnect
+      return res.status(200).json({ events: [], connected: false, reconnectRequired: true });
+    }
     const errText = await calendarRes.text();
     console.error('Microsoft Graph API error:', calendarRes.status, errText.substring(0, 200));
     return res.status(500).json({ error: 'Failed to fetch calendar events' });

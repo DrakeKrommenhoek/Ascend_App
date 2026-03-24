@@ -1,4 +1,5 @@
 const { adminDb } = require('../../_lib/firebase-admin');
+const { parseCookies } = require('../../_lib/parse-cookies');
 
 module.exports = async (req, res) => {
   const { code, state: returnedState, error } = req.query;
@@ -81,11 +82,3 @@ module.exports = async (req, res) => {
   // Redirect back to settings with success indicator
   res.redirect(302, `/settings?connected=google`);
 };
-
-function parseCookies(cookieHeader) {
-  return cookieHeader.split(';').reduce((acc, cookie) => {
-    const [key, ...val] = cookie.trim().split('=');
-    acc[key] = val.join('=');
-    return acc;
-  }, {});
-}

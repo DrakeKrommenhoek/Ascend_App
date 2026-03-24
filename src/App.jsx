@@ -51,7 +51,7 @@ function Onboarding() {
 
   const handleSkipToDemo = useCallback(() => {
     navigate('/signup', {
-      state: { name: 'Drake', archetype: 'eagle', humorStyle: 'straight' },
+      state: { name: 'Demo User', archetype: 'eagle', humorStyle: 'straight' },
     })
   }, [navigate])
 
@@ -86,6 +86,7 @@ export default function App() {
 
       {/* Auth screens — placeholders until Task 2 */}
       <Route path="/login" element={<div>Login screen coming in Task 2</div>} />
+      <Route path="/signup" element={<div>Signup coming in Task 2</div>} />
 
       {/* Protected routes — placeholders until later tasks */}
       <Route

@@ -20,6 +20,9 @@ module.exports = async (req, res) => {
   }
 
   const colonIndex = cookieValue.indexOf(':');
+  if (colonIndex === -1) {
+    return res.redirect(302, `/settings?error=google_state_missing`);
+  }
   const storedState = cookieValue.substring(0, colonIndex);
   const uid = cookieValue.substring(colonIndex + 1);
 
@@ -56,16 +59,21 @@ module.exports = async (req, res) => {
   const expiresAt = new Date(Date.now() + expires_in * 1000);
 
   // Write tokens to Firestore (server-side write — never reaches client)
-  await adminDb
-    .collection('users').doc(uid)
-    .collection('integrations').doc('google')
-    .set({
-      accessToken: access_token,
-      refreshToken: refresh_token,
-      expiresAt,
-      scope: 'https://www.googleapis.com/auth/calendar.readonly',
-      connectedAt: new Date(),
-    });
+  try {
+    await adminDb
+      .collection('users').doc(uid)
+      .collection('integrations').doc('google')
+      .set({
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        expiresAt,
+        scope: 'https://www.googleapis.com/auth/calendar.readonly',
+        connectedAt: new Date(),
+      });
+  } catch (err) {
+    console.error('Failed to write Google tokens to Firestore:', err.message);
+    return res.redirect(302, `/settings?error=google_firestore`);
+  }
 
   // Clear the state cookie
   res.setHeader('Set-Cookie', 'google_oauth_state=; HttpOnly; Secure; SameSite=Lax; Max-Age=0; Path=/');

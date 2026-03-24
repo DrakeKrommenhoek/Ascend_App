@@ -21,11 +21,12 @@ module.exports = async (req, res) => {
 
   const doc = await integrationRef.get();
   if (doc.exists) {
-    const { accessToken } = doc.data();
+    const { accessToken, refreshToken } = doc.data();
+    const tokenToRevoke = refreshToken || accessToken;
 
     // Revoke with Google (best effort — continue even if revocation fails)
     try {
-      await fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken}`, {
+      await fetch(`https://oauth2.googleapis.com/revoke?token=${tokenToRevoke}`, {
         method: 'POST',
       });
     } catch (err) {

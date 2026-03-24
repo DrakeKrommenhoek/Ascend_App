@@ -40,19 +40,25 @@ module.exports = async (req, res) => {
   const now = new Date().toISOString();
   const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  const calendarRes = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events?` +
-    new URLSearchParams({
-      timeMin: now,
-      timeMax: thirtyDaysFromNow,
-      singleEvents: 'true',
-      orderBy: 'startTime',
-      maxResults: '100',
-    }),
-    {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    }
-  );
+  let calendarRes;
+  try {
+    calendarRes = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events?` +
+      new URLSearchParams({
+        timeMin: now,
+        timeMax: thirtyDaysFromNow,
+        singleEvents: 'true',
+        orderBy: 'startTime',
+        maxResults: '100',
+      }),
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+  } catch (err) {
+    console.error('Google Calendar API network error:', err.message);
+    return res.status(500).json({ error: 'Failed to reach Google Calendar API' });
+  }
 
   if (!calendarRes.ok) {
     const errText = await calendarRes.text();

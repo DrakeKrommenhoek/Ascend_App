@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
       const dueAt = item.plannable_date;
 
       return {
-        id: `canvas_${item.plannable_id || Math.random()}`,
+        id: `canvas_${item.plannable_id || [item.plannable_type, item.course_id, item.plannable_date].filter(Boolean).join('_')}`,
         title,
         start: dueAt,
         end: dueAt, // Canvas assignments are point-in-time

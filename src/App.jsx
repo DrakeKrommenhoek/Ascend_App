@@ -8,6 +8,7 @@ import PetIntro       from './screens/PetIntro.jsx'
 import Login          from './screens/Login.jsx'
 import SignUp         from './screens/SignUp.jsx'
 import Dashboard      from './screens/Dashboard.jsx'
+import Settings       from './screens/Settings.jsx'
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx'
 
 // Onboarding state machine — Intro → NameCapture → Quiz → Reveal → PetIntro → /signup
@@ -80,7 +81,7 @@ export default function App() {
         path="/settings"
         element={
           <ProtectedRoute>
-            <div style={{ color: 'white', padding: '2rem' }}>Settings coming in Task 8</div>
+            <Settings />
           </ProtectedRoute>
         }
       />

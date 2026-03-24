@@ -1,11 +1,15 @@
 {
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
       "source": "/ascend-signup",
       "destination": "/ascend-signup.html"
     },
     {
-      "source": "/((?!ascend-signup).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { ARCHETYPES, getPetMessage } from '../data/archetypes.js'
+import { useNavigate } from 'react-router-dom'
+import { useIntegrations } from '../hooks/useIntegrations'
 
 // ── Theme tokens — CSS custom properties (free/premium toggled via .premium-mode class)
 const T = {
@@ -852,6 +854,10 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
   const lockAnimTimerRef = useRef(null)
   const bannerTimerRef = useRef(null)
 
+  const navigate = useNavigate()
+  const { integrations } = useIntegrations()
+  const anyConnected = !!(integrations.google || integrations.microsoft || integrations.canvas)
+
   const hour = new Date().getHours()
   const timeGreeting = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening'
 
@@ -971,6 +977,26 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
           </p>
         </div>
 
+        {/* Right-side controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <button
+          onClick={() => navigate('/settings')}
+          style={{
+            background: 'none',
+            border: '1px solid var(--t-border, rgba(0,0,0,0.12))',
+            borderRadius: '8px',
+            padding: '6px 14px',
+            cursor: 'pointer',
+            color: 'var(--t-text)',
+            fontSize: '13px',
+            fontFamily: 'inherit',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          ⚙️ Settings
+        </button>
         {/* Pet widget */}
         <button
           onClick={() => setShowPetModal(true)}
@@ -1016,6 +1042,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             </p>
           </div>
         </button>
+        </div>
       </div>
 
       {/* ── FREE / PREMIUM TOGGLE ───────────────────────────── */}
@@ -1346,6 +1373,30 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                   </div>
                 )
               })()}
+
+            {/* ── CALENDAR EMPTY STATE ──────────────────────────── */}
+            {!anyConnected && (
+              <div style={{
+                margin: '1rem 0',
+                padding: '0.75rem 1rem',
+                background: 'var(--t-surface)',
+                borderRadius: '10px',
+                border: '1px dashed var(--t-accent)',
+                fontSize: '13px',
+                color: 'var(--t-text-muted, var(--t-text))',
+                opacity: 0.75,
+                textAlign: 'center',
+              }}>
+                📅 Connect Google Calendar, Outlook, or Canvas in{' '}
+                <button
+                  onClick={() => navigate('/settings')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--t-accent)', fontWeight: 600, fontSize: '13px', fontFamily: 'inherit', padding: 0, textDecoration: 'underline' }}
+                >
+                  Settings
+                </button>{' '}
+                to see your real events here.
+              </div>
+            )}
             </div>
 
             {/* ── PROGRESS SNAPSHOT ─────────────────────────────── */}

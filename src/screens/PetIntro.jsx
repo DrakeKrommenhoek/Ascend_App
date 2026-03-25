@@ -15,7 +15,7 @@ export default function PetIntro({ archetypeId, name, onComplete }) {
   return (
     <div style={{
       width: '100%', height: '100%',
-      backgroundColor: 'var(--bg-primary)',
+      backgroundColor: 'var(--bg-dark)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -31,19 +31,32 @@ export default function PetIntro({ archetypeId, name, onComplete }) {
         animation: 'fade-in 600ms ease-out forwards',
       }}>
 
-        {/* Animal image */}
+        {/* Animal image (or emoji fallback for archetypes without assets yet) */}
         <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center' }}>
-          <img
-            src={archetype.image}
-            alt={archetype.animal}
-            draggable={false}
-            style={{
+          {archetype.image ? (
+            <img
+              src={archetype.image}
+              alt={archetype.animal}
+              draggable={false}
+              style={{
+                height: 'clamp(160px, 36vh, 300px)',
+                width: 'auto',
+                objectFit: 'contain',
+                filter: `drop-shadow(0 0 28px ${archetype.color}55)`,
+              }}
+            />
+          ) : (
+            <div style={{
               height: 'clamp(160px, 36vh, 300px)',
-              width: 'auto',
-              objectFit: 'contain',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 'clamp(80px, 15vh, 140px)',
               filter: `drop-shadow(0 0 28px ${archetype.color}55)`,
-            }}
-          />
+            }}>
+              {archetype.emoji}
+            </div>
+          )}
         </div>
 
         {/* Right column */}
@@ -172,7 +185,7 @@ export default function PetIntro({ archetypeId, name, onComplete }) {
               fontFamily: 'DM Sans, sans-serif',
               fontWeight: 600,
               fontSize: 'clamp(0.85rem, 1.5vw, 1rem)',
-              color: selected ? '#0A0E1A' : 'var(--text-secondary)',
+              color: selected ? 'var(--accent-text)' : 'var(--text-soft-dark)',
               cursor: selected ? 'pointer' : 'not-allowed',
               transition: 'background-color 200ms ease, color 200ms ease, transform 150ms ease',
               animation: 'fade-in 500ms ease-out 600ms both',

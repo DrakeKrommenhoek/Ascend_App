@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { ARCHETYPES, getPetMessage } from '../data/archetypes.js'
+import { useTheme } from '../contexts/ThemeContext.jsx'
+import { useAuth } from '../contexts/AuthContext.jsx'
 
 // ── Theme tokens — CSS custom properties (free/premium toggled via .premium-mode class)
 const T = {
@@ -470,7 +472,7 @@ function DayDetailPanel({ day, name, onClose }) {
               {HOURS.slice(0, 14).map((_h, i) => (
                 <div key={`hh-${i}`} style={{
                   position: 'absolute', left: 0, right: 0, top: `${i * ROW_H + ROW_H / 2}px`,
-                  height: '1px', backgroundColor: '#F9FAFB', zIndex: 0,
+                  height: '1px', backgroundColor: T.border, zIndex: 0,
                 }} />
               ))}
 
@@ -520,9 +522,9 @@ function DayDetailPanel({ day, name, onClose }) {
                   }}>
                     <span style={{
                       fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 400,
-                      color: gap.isGold ? '#92400E' : '#9CA3AF',
+                      color: gap.isGold ? '#92400E' : T.secondary,
                       backgroundColor: gap.isGold ? '#FFFBEB' : T.bg,
-                      border: `1px dashed ${gap.isGold ? '#D97706' : '#D1D5DB'}`,
+                      border: `1px dashed ${gap.isGold ? '#D97706' : T.border}`,
                       borderRadius: '20px', padding: '3px 12px',
                       whiteSpace: 'nowrap', maxWidth: '100%',
                       overflow: 'hidden', textOverflow: 'ellipsis',
@@ -590,22 +592,22 @@ function WeekView({ onDayClick }) {
               onClick={() => onDayClick(day)}
               style={{
                 borderRadius: '8px',
-                backgroundColor: isToday ? '#EEF4FF' : T.surface,
-                border: `1px solid ${isToday ? '#BFDBFE' : T.border}`,
+                backgroundColor: isToday ? 'var(--t-today-bg)' : T.surface,
+                border: `1px solid ${isToday ? 'var(--t-today-border)' : T.border}`,
                 padding: '6px 5px',
                 cursor: 'pointer',
                 minHeight: '110px',
                 display: 'flex', flexDirection: 'column', gap: '3px',
                 transition: 'background-color 120ms ease',
               }}
-              onMouseEnter={e => { e.currentTarget.style.backgroundColor = isToday ? '#DBEAFE' : '#EAECF0' }}
-              onMouseLeave={e => { e.currentTarget.style.backgroundColor = isToday ? '#EEF4FF' : T.surface }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = isToday ? 'var(--t-today-hover)' : '#EAECF0' }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = isToday ? 'var(--t-today-bg)' : T.surface }}
             >
               {/* Day header */}
               <div style={{ marginBottom: '4px' }}>
                 <p style={{
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem',
-                  color: isToday ? '#1D4ED8' : T.secondary,
+                  color: isToday ? 'var(--t-today-text)' : T.secondary,
                   letterSpacing: '0.06em', margin: 0, textTransform: 'uppercase',
                 }}>
                   {DEMO_WEEK_DAYS[idx]}
@@ -614,7 +616,7 @@ function WeekView({ onDayClick }) {
                   fontFamily: isToday ? 'Playfair Display, serif' : 'DM Sans, sans-serif',
                   fontWeight: isToday ? 700 : 500,
                   fontSize: isToday ? '1.05rem' : '0.88rem',
-                  color: isToday ? '#1D4ED8' : T.navy,
+                  color: isToday ? 'var(--t-today-text)' : T.navy,
                   margin: 0, lineHeight: 1,
                 }}>
                   {day}
@@ -720,8 +722,8 @@ function CalendarGrid({ compact, onDayClick }) {
                   style={{
                     minHeight: compact ? '26px' : '76px',
                     borderRadius: '5px',
-                    backgroundColor: isToday ? '#EEF4FF' : T.surface,
-                    border: `1px solid ${isToday ? '#BFDBFE' : T.border}`,
+                    backgroundColor: isToday ? 'var(--t-today-bg)' : T.surface,
+                    border: `1px solid ${isToday ? 'var(--t-today-border)' : T.border}`,
                     padding: compact ? '3px' : '4px 5px 3px',
                     overflow: 'hidden',
                     opacity: isPast ? 0.42 : 1,
@@ -731,14 +733,14 @@ function CalendarGrid({ compact, onDayClick }) {
                   }}
                   onMouseEnter={e => {
                     if (day && !compact && !isPast) {
-                      e.currentTarget.style.backgroundColor = isToday ? '#DBEAFE' : '#EAECF0'
+                      e.currentTarget.style.backgroundColor = isToday ? 'var(--t-today-hover)' : '#EAECF0'
                       e.currentTarget.style.borderColor = '#C5CDD9'
                     }
                   }}
                   onMouseLeave={e => {
                     if (day && !compact) {
-                      e.currentTarget.style.backgroundColor = isToday ? '#EEF4FF' : T.surface
-                      e.currentTarget.style.borderColor = isToday ? '#BFDBFE' : T.border
+                      e.currentTarget.style.backgroundColor = isToday ? 'var(--t-today-bg)' : T.surface
+                      e.currentTarget.style.borderColor = isToday ? 'var(--t-today-border)' : T.border
                     }
                   }}
                 >
@@ -751,7 +753,7 @@ function CalendarGrid({ compact, onDayClick }) {
                         <span style={{
                           fontFamily: 'DM Sans, sans-serif', fontSize: '0.63rem',
                           fontWeight: isToday ? 700 : 400,
-                          color: isToday ? '#1D4ED8' : T.secondary, lineHeight: 1,
+                          color: isToday ? 'var(--t-today-text)' : T.secondary, lineHeight: 1,
                         }}>
                           {day}
                         </span>
@@ -844,7 +846,8 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
   const [showPetModal,   setShowPetModal]   = useState(false)
   const [showBanner,     setShowBanner]     = useState(false)
   const [showProTooltip, setShowProTooltip] = useState(false)
-  const [isPremium,      setIsPremium]      = useState(false)
+  const { isPremiumTheme: isPremium, toggleTheme } = useTheme()
+  const { user: authUser } = useAuth()
   const [lockAnim,       setLockAnim]       = useState('locked') // 'locked' | 'unlocking' | 'unlocked'
   const [emailModal,     setEmailModal]     = useState(null)     // null | contact object
   const [emailText,      setEmailText]      = useState('')
@@ -864,13 +867,13 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
 
   const petMsg = getPetMessage(archetypeId, humorStyle, petContext, name)
 
-  function togglePremium() {
+  function handleToggleTheme() {
     if (isPremium) {
       clearTimeout(lockAnimTimerRef.current)
       setLockAnim('locked')
-      setIsPremium(false)
+      toggleTheme(authUser)
     } else {
-      setIsPremium(true)
+      toggleTheme(authUser)
       setLockAnim('unlocking')
       lockAnimTimerRef.current = setTimeout(() => setLockAnim('unlocked'), 600)
     }
@@ -911,7 +914,6 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
 
   return (
     <div
-      className={isPremium ? 'premium-mode' : ''}
       style={{
         width: '100%', height: '100%',
         backgroundColor: T.bg,
@@ -935,7 +937,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
           <p style={{
             fontFamily: 'DM Sans, sans-serif', fontWeight: 600,
             fontSize: 'clamp(0.85rem, 1.6vw, 1rem)',
-            color: '#0A0E1A', margin: 0,
+            color: 'var(--accent-text)', margin: 0,
           }}>
             {bannerMsg}
           </p>
@@ -1026,7 +1028,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
         transition: themeTransition,
       }}>
         <div
-          onClick={togglePremium}
+          onClick={handleToggleTheme}
           style={{
             position: 'relative',
             display: 'flex', alignItems: 'center',
@@ -1046,7 +1048,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             left: '3px',
             width: 'calc(50% - 3px)',
             height: 'calc(100% - 6px)',
-            backgroundColor: isPremium ? '#F59E0B' : 'white',
+            backgroundColor: isPremium ? '#F59E0B' : T.bg,
             borderRadius: '12px',
             boxShadow: isPremium ? '0 1px 6px rgba(245,158,11,0.4)' : '0 1px 4px rgba(0,0,0,0.12)',
             transform: isPremium ? 'translateX(100%)' : 'translateX(0)',
@@ -1068,7 +1070,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             flex: 1, textAlign: 'center',
             fontFamily: 'DM Sans, sans-serif',
             fontSize: '0.72rem', fontWeight: 600,
-            color: isPremium ? '#0D1B3E' : T.secondary,
+            color: isPremium ? 'var(--t-accent-text)' : T.secondary,
             transition: 'color 200ms ease',
           }}>
             Premium
@@ -1521,12 +1523,12 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             )}
             {syllabusState === 'added' && (
               <div style={{
-                backgroundColor: '#F0FDF4', borderRadius: '10px',
-                border: '1px solid #BBF7D0', padding: '12px 16px',
+                backgroundColor: 'var(--t-success-bg)', borderRadius: '10px',
+                border: '1px solid var(--t-success-border)', padding: '12px 16px',
                 display: 'flex', alignItems: 'center', gap: '10px',
               }}>
                 <span style={{ fontSize: '1rem' }}>✅</span>
-                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#15803D', margin: 0, fontWeight: 600 }}>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: 'var(--t-success-text)', margin: 0, fontWeight: 600 }}>
                   4 FIN 401 deadlines added to your calendar and game plan.
                 </p>
               </div>
@@ -1570,7 +1572,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <div style={{
-              backgroundColor: 'white',
+              backgroundColor: T.bg,
               borderRadius: '14px',
               border: `1px solid ${T.border}`,
               boxShadow: '0 8px 32px rgba(27,58,107,0.12)',
@@ -1592,7 +1594,7 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                 Full recruiting intelligence — pipeline tracking, networking CRM, and firm-specific deadline alerts.
               </p>
               <div
-                onClick={togglePremium}
+                onClick={handleToggleTheme}
                 style={{
                   display: 'inline-block',
                   backgroundColor: T.accent, color: T.accentText,
@@ -1748,9 +1750,9 @@ export default function Dashboard({ archetypeId, name, humorStyle, onRestart }) 
                         <div key={i} onClick={() => togglePersonal(i)} style={{
                           display: 'flex', flexDirection: 'column',
                           padding: 'clamp(11px, 2vh, 15px) clamp(14px, 2.5vw, 18px)',
-                          backgroundColor: done ? '#F0FDF4' : T.surface,
+                          backgroundColor: done ? 'var(--t-success-bg)' : T.surface,
                           borderRadius: '8px',
-                          border: `1px solid ${done ? '#BBF7D0' : T.border}`,
+                          border: `1px solid ${done ? 'var(--t-success-border)' : T.border}`,
                           cursor: done ? 'default' : 'pointer',
                           opacity: done ? 0.65 : 1,
                           transition: 'opacity 250ms ease, background-color 200ms ease',

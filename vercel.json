@@ -5,7 +5,7 @@
       "destination": "/ascend-signup.html"
     },
     {
-      "source": "/((?!ascend-signup).*)",
+      "source": "/((?!api|ascend-signup).*)",
       "destination": "/index.html"
     }
   ]

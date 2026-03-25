@@ -20,7 +20,7 @@ export default function NameCapture({ onComplete }) {
   return (
     <div style={{
       position: 'absolute', inset: 0,
-      backgroundColor: 'white',
+      backgroundColor: 'var(--bg-secondary)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -43,7 +43,7 @@ export default function NameCapture({ onComplete }) {
             fontFamily: 'Playfair Display, serif',
             fontWeight: 600,
             fontSize: 'clamp(1.3rem, 2.8vw, 1.9rem)',
-            color: '#1B3A6B',
+            color: 'var(--text-primary)',
             lineHeight: 1.35,
             margin: '0 0 clamp(10px, 2vh, 16px) 0',
           }}>
@@ -53,7 +53,7 @@ export default function NameCapture({ onComplete }) {
             fontFamily: 'DM Sans, sans-serif',
             fontWeight: 300,
             fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
-            color: '#3A5A8A',
+            color: 'var(--text-secondary)',
             lineHeight: 1.65,
             margin: 0,
           }}>
@@ -75,18 +75,18 @@ export default function NameCapture({ onComplete }) {
               fontFamily: 'DM Sans, sans-serif',
               fontWeight: 400,
               fontSize: 'clamp(1rem, 2vw, 1.2rem)',
-              color: '#1B3A6B',
+              color: 'var(--text-primary)',
               backgroundColor: 'transparent',
               border: 'none',
-              borderBottom: '2px solid #C5D5EA',
+              borderBottom: '2px solid var(--border)',
               borderRadius: 0,
               padding: '10px 2px',
               outline: 'none',
               width: '100%',
               transition: 'border-color 200ms ease',
             }}
-            onFocus={e => { e.target.style.borderBottomColor = '#4F8EF7' }}
-            onBlur={e => { e.target.style.borderBottomColor = '#C5D5EA' }}
+            onFocus={e => { e.target.style.borderBottomColor = 'var(--accent)' }}
+            onBlur={e => { e.target.style.borderBottomColor = 'var(--border)' }}
           />
 
           <button
@@ -96,19 +96,20 @@ export default function NameCapture({ onComplete }) {
               alignSelf: 'flex-start',
               marginTop: '6px',
               padding: '12px 28px',
-              backgroundColor: value.trim() ? '#1B3A6B' : '#A0B4CC',
+              backgroundColor: 'var(--accent)',
+              opacity: value.trim() ? 1 : 0.45,
               border: 'none',
               borderRadius: '8px',
               fontFamily: 'DM Sans, sans-serif',
               fontWeight: 600,
               fontSize: 'clamp(0.9rem, 1.6vw, 1rem)',
-              color: 'white',
+              color: 'var(--accent-text)',
               cursor: value.trim() ? 'pointer' : 'not-allowed',
               transition: 'background-color 200ms ease, transform 150ms ease',
               letterSpacing: '0.02em',
             }}
-            onMouseEnter={e => { if (value.trim()) e.currentTarget.style.backgroundColor = '#2A5298' }}
-            onMouseLeave={e => { if (value.trim()) e.currentTarget.style.backgroundColor = '#1B3A6B' }}
+            onMouseEnter={e => { if (value.trim()) e.currentTarget.style.opacity = '0.85' }}
+            onMouseLeave={e => { if (value.trim()) e.currentTarget.style.opacity = '1' }}
             onMouseDown={e => { if (value.trim()) e.currentTarget.style.transform = 'scale(0.97)' }}
             onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
           >

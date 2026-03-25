@@ -3,6 +3,7 @@ import { ARCHETYPES } from '../data/archetypes.js'
 
 export default function Reveal({ archetypeId, name, onComplete }) {
   const archetype = ARCHETYPES[archetypeId] || ARCHETYPES.eagle
+  // Fallback to eagle only if completely unknown — all 7 are defined in archetypes.js
   const [phase, setPhase] = useState(0)  // 0=intro text, 1=archetype name, 2=full reveal
 
   const t1 = useRef(null)
@@ -18,7 +19,7 @@ export default function Reveal({ archetypeId, name, onComplete }) {
   return (
     <div style={{
       width: '100%', height: '100%',
-      backgroundColor: 'var(--bg-primary)',
+      backgroundColor: 'var(--bg-dark)',
       display: 'flex',
       alignItems: 'stretch',
       overflow: 'hidden',
@@ -38,7 +39,7 @@ export default function Reveal({ archetypeId, name, onComplete }) {
           fontFamily: 'DM Sans, sans-serif',
           fontWeight: 300,
           fontSize: 'clamp(0.9rem, 1.8vw, 1.1rem)',
-          color: 'var(--text-secondary)',
+          color: 'var(--text-soft-dark)',
           letterSpacing: '0.04em',
           margin: '0 0 clamp(12px, 2vh, 20px) 0',
           animation: 'fade-in 600ms ease-out forwards',
@@ -95,7 +96,7 @@ export default function Reveal({ archetypeId, name, onComplete }) {
 
             <div style={{
               width: '40px', height: '1px',
-              backgroundColor: 'rgba(255,255,255,0.15)',
+              backgroundColor: 'rgba(255,255,255,0.12)',
               margin: '0 0 1.5rem 0',
               animation: 'fade-in 500ms ease-out 100ms both',
             }} />
@@ -104,7 +105,7 @@ export default function Reveal({ archetypeId, name, onComplete }) {
               fontFamily: 'DM Sans, sans-serif',
               fontWeight: 300,
               fontSize: 'clamp(0.88rem, 1.55vw, 1.02rem)',
-              color: 'var(--text-primary)',
+              color: 'var(--text-on-dark)',
               lineHeight: 1.72,
               opacity: 0.85,
               margin: '0 0 1.5rem 0',
@@ -159,7 +160,7 @@ export default function Reveal({ archetypeId, name, onComplete }) {
                 fontFamily: 'DM Sans, sans-serif',
                 fontWeight: 600,
                 fontSize: 'clamp(0.85rem, 1.5vw, 1rem)',
-                color: '#0A0E1A',
+                color: 'var(--accent-text)',
                 cursor: 'pointer',
                 animation: 'fade-in 500ms ease-out 400ms both',
                 transition: 'opacity 150ms ease, transform 150ms ease',
@@ -169,33 +170,54 @@ export default function Reveal({ archetypeId, name, onComplete }) {
               onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.97)' }}
               onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
             >
-              Meet your accountability partner →
+              Open my dashboard →
             </button>
           </>
         )}
       </div>
 
-      {/* Right panel — animal image */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 'clamp(24px, 4vw, 56px)',
-        animation: 'fade-in 700ms ease-out 300ms both',
-      }}>
-        <img
-          src={archetype.image}
-          alt={archetype.animal}
-          draggable={false}
-          style={{
-            maxHeight: '82%',
-            maxWidth: '100%',
-            objectFit: 'contain',
+      {/* Right panel — animal image (only renders if asset exists) */}
+      {archetype.image && (
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'clamp(24px, 4vw, 56px)',
+          animation: 'fade-in 700ms ease-out 300ms both',
+        }}>
+          <img
+            src={archetype.image}
+            alt={archetype.animal}
+            draggable={false}
+            style={{
+              maxHeight: '82%',
+              maxWidth: '100%',
+              objectFit: 'contain',
+              filter: `drop-shadow(0 0 48px ${archetype.color}44)`,
+            }}
+          />
+        </div>
+      )}
+
+      {/* Fallback emoji panel when no image asset is available yet */}
+      {!archetype.image && (
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'clamp(24px, 4vw, 56px)',
+          animation: 'fade-in 700ms ease-out 300ms both',
+        }}>
+          <div style={{
+            fontSize: 'clamp(80px, 15vw, 140px)',
             filter: `drop-shadow(0 0 48px ${archetype.color}44)`,
-          }}
-        />
-      </div>
+          }}>
+            {archetype.emoji}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

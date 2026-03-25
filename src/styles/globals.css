@@ -6,17 +6,29 @@
    DESIGN TOKENS
    =========================== */
 :root {
-  --bg-primary: #0A0E1A;
-  --bg-surface: #131929;
-  --bg-elevated: #1C2438;
-  --accent-blue: #4F8EF7;
-  --accent-gold: #F5C842;
-  --accent-teal: #2DD4BF;
-  --text-primary: #F0F4FF;
-  --text-secondary: #8B95A8;
+  /* ── Free theme (default — light) ── */
+  --bg-primary:    #F4F6FA;
+  --bg-secondary:  #FFFFFF;
+  --bg-elevated:   #FFFFFF;
+  --text-primary:  #0F1A3A;
+  --text-secondary:#4A5568;
+  --accent:        #4A7FD4;
+  --accent-text:   #FFFFFF;
+  --border:        #E2E8F0;
+  --card-bg:       #FFFFFF;
+  --card-border:   #E2E8F0;
+
+  /* ── Always-dark context (Intro screen, never changes with theme) ── */
+  --bg-dark:         #0A0E1A;
+  --bg-dark-surface: #131929;
+  --bg-dark-elevated:#1C2438;
+  --text-on-dark:    #F0F4FF;
+  --text-soft-dark:  #8B95A8;
+
+  /* ── Semantic globals ── */
   --success: #34D399;
   --warning: #FBBF24;
-  --danger: #F87171;
+  --danger:  #F87171;
 
   /* ── Dashboard theme tokens (Free mode defaults) ── */
   --t-bg:          #FFFFFF;
@@ -37,10 +49,32 @@
   --t-pri-bg-r:    #FEF2F2;
   --t-pri-bg-y:    #FFFBEB;
   --t-pri-bg-g:    #F0FDF4;
+  /* Today highlight tokens */
+  --t-today-bg:    #EEF4FF;
+  --t-today-border:#BFDBFE;
+  --t-today-hover: #DBEAFE;
+  --t-today-text:  #1D4ED8;
+  /* Success/Canvas tokens */
+  --t-success-bg:     #F0FDF4;
+  --t-success-border: #BBF7D0;
+  --t-success-text:   #15803D;
 }
 
-/* ── Premium mode overrides ───────────────────────── */
-.premium-mode {
+/* ── Premium theme — dark navy + gold ───────────────── */
+/* Applied as .premium on <body> by ThemeContext          */
+body.premium {
+  --bg-primary:    #0F1A3A;
+  --bg-secondary:  #1A2B5C;
+  --bg-elevated:   #1A2B5C;
+  --text-primary:  #F4F6FA;
+  --text-secondary:#A0AEC0;
+  --accent:        #C9A84C;
+  --accent-text:   #0F1A3A;
+  --border:        #2D4A8A;
+  --card-bg:       #1A2B5C;
+  --card-border:   #C9A84C;
+
+  /* ── Dashboard theme tokens (Premium overrides) ── */
   --t-bg:          #0D1B3E;
   --t-surface:     #152347;
   --t-border:      rgba(255,255,255,0.08);
@@ -59,6 +93,20 @@
   --t-pri-bg-r:    rgba(232,69,69,0.18);
   --t-pri-bg-y:    rgba(245,158,11,0.18);
   --t-pri-bg-g:    rgba(29,175,114,0.18);
+  /* Today highlight tokens (premium) */
+  --t-today-bg:    rgba(79,142,247,0.15);
+  --t-today-border:rgba(79,142,247,0.35);
+  --t-today-hover: rgba(79,142,247,0.22);
+  --t-today-text:  #93C5FD;
+  /* Success/Canvas tokens (premium) */
+  --t-success-bg:     rgba(29,175,114,0.15);
+  --t-success-border: rgba(29,175,114,0.35);
+  --t-success-text:   #6EE7B7;
+}
+
+/* ── Animated theme transition ───────────────────────── */
+.theme-transitioning * {
+  transition: background-color 0.6s ease, color 0.6s ease, border-color 0.6s ease !important;
 }
 
 /* ===========================
@@ -73,7 +121,6 @@
 html, body, #root {
   height: 100%;
   width: 100%;
-  overflow: hidden;
 }
 
 body {

@@ -89,11 +89,14 @@ export default function DashboardMock() {
         </span>
       </div>
 
-      {/* Day columns */}
+      {/* Day columns. Below ~520px, 5 columns get too narrow for the task
+          text (words break mid-word), so only Mon-Wed show; the mock stays
+          a believable slice of the week without cramping. */}
       <div style={{ display: 'flex', minWidth: 0 }}>
         {DAYS.map((day, i) => (
           <div
             key={day.label}
+            className={i >= 3 ? 'lp-daymock-col lp-daymock-col-extra' : 'lp-daymock-col'}
             style={{
               flex: 1,
               minWidth: 0,
@@ -130,6 +133,14 @@ export default function DashboardMock() {
           </div>
         ))}
       </div>
+
+      <style>{`
+        @media (max-width: 520px) {
+          /* !important needed: the column itself carries an inline
+             display:flex style, which otherwise always wins. */
+          .lp-daymock-col-extra { display: none !important; }
+        }
+      `}</style>
     </motion.div>
   )
 }

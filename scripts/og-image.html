@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@500&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px;
+    height: 630px;
+    background: #0A0E1A;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .stage {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    background: #0A0E1A;
+  }
+  svg.contours {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1200px;
+    height: 630px;
+  }
+  .eyebrow {
+    position: absolute;
+    top: 118px;
+    left: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    color: #C9A84C;
+    text-transform: uppercase;
+  }
+  .headline {
+    position: absolute;
+    top: 158px;
+    left: 80px;
+    max-width: 760px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 68px;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: #EDE7DA;
+  }
+  .wordmark {
+    position: absolute;
+    bottom: 56px;
+    left: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 0.3em;
+    color: #EDE7DA;
+  }
+  .wordmark .dot {
+    color: #C9A84C;
+  }
+  .rule {
+    position: absolute;
+    bottom: 100px;
+    left: 80px;
+    width: 90px;
+    height: 2px;
+    background: #C9A84C;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <svg class="contours" viewBox="0 0 1200 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g fill="none" stroke="rgba(201,168,76,0.35)" stroke-width="1.25">
+        <path d="M 980,80  C 1060,60 1140,110 1160,190  C 1180,270 1150,350 1090,400  C 1030,450 950,460 890,410  C 830,360 820,280 850,210  C 880,140 900,100 980,80 Z" />
+        <path d="M 970,55  C 1070,30 1170,90 1195,185  C 1220,280 1180,375 1105,435  C 1030,495 935,505 860,445  C 785,385 770,285 810,200  C 850,115 870,80 970,55 Z" />
+        <path d="M 960,30  C 1085,0 1200,70 1230,180  C 1260,290 1210,400 1120,470  C 1030,540 915,550 825,480  C 735,410 715,290 765,190  C 815,90 835,60 960,30 Z" />
+        <path d="M 950,5  C 1100,-30 1230,50 1265,175  C 1300,300 1240,425 1135,505  C 1030,585 895,595 790,515  C 685,435 660,295 720,180  C 780,65 800,35 950,5 Z" />
+        <path d="M 940,-20  C 1115,-60 1260,30 1300,170  C 1340,310 1270,450 1150,540  C 1030,630 875,640 755,550  C 635,460 605,300 685,170  C 745,40 765,10 940,-20 Z" />
+        <path d="M 1000,120 C 1055,105 1110,140 1122,195 C 1134,250 1108,300 1060,325 C 1012,350 955,345 925,305 C 895,265 895,215 920,175 C 945,135 960,130 1000,120 Z" />
+        <path d="M 1005,140 C 1075,120 1145,165 1160,235 C 1175,305 1140,370 1075,400 C 1010,430 935,420 895,365 C 855,310 858,245 895,195 C 932,145 950,155 1005,140 Z" />
+        <path d="M 1010,160 C 1095,135 1180,190 1198,275 C 1216,360 1172,435 1090,470 C 1008,505 915,495 865,430 C 815,365 820,285 865,225 C 910,165 935,180 1010,160 Z" />
+        <path d="M 900,340 C 950,325 1005,355 1020,405 C 1035,455 1010,505 960,525 C 910,545 855,535 830,490 C 805,445 810,395 840,360 C 860,335 875,345 900,340 Z" />
+      </g>
+    </svg>
+    <div class="rule"></div>
+    <div class="eyebrow">YOUR EDGE, ORGANIZED.</div>
+    <div class="headline">Never miss the deadline that costs you the offer.</div>
+    <div class="wordmark">ASCEND<span class="dot">.</span></div>
+  </div>
+</body>
+</html>

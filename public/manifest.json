@@ -2,7 +2,7 @@
   "name": "Ascend",
   "short_name": "Ascend",
   "description": "Your Strategic Operating System",
-  "start_url": "/",
+  "start_url": "/start",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#ffffff",

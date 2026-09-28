@@ -1,11 +1,17 @@
 {
+  "redirects": [
+    { "source": "/ascend-signup", "destination": "/", "permanent": true },
+    { "source": "/ascend-signup.html", "destination": "/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+    }
+  ],
   "rewrites": [
     {
-      "source": "/ascend-signup",
-      "destination": "/ascend-signup.html"
-    },
-    {
-      "source": "/((?!api|ascend-signup).*)",
+      "source": "/((?!api|@vite|@react-refresh|node_modules|src).*)",
       "destination": "/index.html"
     }
   ]

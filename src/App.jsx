@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
+import RouteTracker from './components/RouteTracker.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx'
@@ -11,8 +13,10 @@ import Reveal      from './screens/Reveal.jsx'
 import PetIntro    from './screens/PetIntro.jsx'
 import Dashboard   from './screens/Dashboard.jsx'
 import Login       from './screens/Login.jsx'
+import Landing     from './landing/Landing.jsx'
+import Privacy     from './screens/Privacy.jsx'
 
-// ── Onboarding flow — lives at "/" ───────────────────────────────────────────
+// ── Onboarding flow — lives at "/start" ─────────────────────────────────────
 // Keeps the existing state-machine intact. After the quiz + reveal, the user
 // is navigated to /login (if not authenticated) or /dashboard (if already authed).
 function OnboardingFlow() {
@@ -138,10 +142,13 @@ function DashboardWrapper() {
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteTracker />
       <AuthProvider>
         <ThemeProvider>
           <Routes>
-            <Route path="/"          element={<OnboardingFlow />} />
+            <Route path="/"          element={<Landing />} />
+            <Route path="/start"     element={<OnboardingFlow />} />
+            <Route path="/privacy"   element={<Privacy />} />
             <Route path="/login"     element={<Login />} />
             <Route path="/dashboard" element={
               <ProtectedRoute><DashboardWrapper /></ProtectedRoute>
@@ -150,6 +157,7 @@ export default function App() {
           </Routes>
         </ThemeProvider>
       </AuthProvider>
+      <Analytics />
     </BrowserRouter>
   )
 }

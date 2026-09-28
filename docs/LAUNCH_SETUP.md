@@ -14,7 +14,7 @@ This guide walks you through three integrations that make the landing page funct
 - **Google Analytics 4 (GA4)** tracks when people sign up, what marketing channel brought them in (Instagram, email, etc.), and how they discovered the app (cold, referred, etc.).
 - **Vercel** deploys the app and securely manages the API keys (Mailchimp credentials and GA4 ID) so they never leak into the browser.
 
-Each section has numbered steps with time estimates. You'll need access to Drake's email (`hello@ascend.app` or your own) for Mailchimp and GA4. The entire setup takes about 30 minutes.
+Each section has numbered steps with time estimates. You'll need a Google account (for GA4) and an email inbox you check (for Mailchimp). The entire setup takes about 30 minutes.
 
 ---
 
@@ -28,14 +28,16 @@ Each section has numbered steps with time estimates. You'll need access to Drake
 **Free plan limits (as of 2026):** [Source: Mailchimp Pricing](https://mailchimp.com/help/about-mailchimp-pricing-plans/)
 - Up to 250 contacts
 - 500 emails sent per month
-- Note: If you exceed 250 contacts, Mailchimp will pause sending until you upgrade or reduce contacts.
+- 250 sends per day
+- **No automations** on Free: no automatic welcome email or journeys (those start at Essentials). The double opt-in confirmation email still goes out automatically, because it's part of the audience itself, not an automation.
+- **Decision (2026-09-28):** stay on Free for now. **Upgrade trigger: 200 contacts.** Check the count weekly in Audience → All contacts, and upgrade to Essentials before you hit 250 so signups never bounce off the cap.
 
 ### Step 2: Create an Audience (3 min)
 - [ ] From the Mailchimp dashboard, click **Audience** in the left sidebar.
 - [ ] Click **Create Audience** and name it `Ascend Waitlist`.
 - [ ] Fill in the required fields:
   - **Campaign name:** Ascend Waitlist
-  - **Default "From" email:** Use a company email (e.g., `hello@ascend.app`)
+  - **Default "From" email:** a real inbox you control and check (for example your personal Gmail for now). Don't use an address on a domain you don't own; Mailchimp verifies it, and replies need to reach you.
   - **Physical address:** Enter a real address (a PO box or virtual address like Google's is fine; this is required by US anti-spam law and Mailchimp's terms).
 - [ ] Under **Contact preferences**, ensure **Double opt-in** is enabled. [Source: Double Opt-in Explanation](https://mailchimp.com/help/about-double-opt-in/) This means new signups must confirm their email before they're fully subscribed—critical for list quality.
 - [ ] Click **Save**.
@@ -76,43 +78,47 @@ Merge fields let Mailchimp store extra data about each contact. These must be cr
 - [ ] Still in Audience settings, click **Notifications & confirmations** (or **Signup notifications**).
 - [ ] Enable the double opt-in confirmation email and optionally customize the subject line. Mailchimp will send this automatically when someone enters their email.
 
-### Step 7: Create a Welcome Journey (2 min)
-With automation removed from Mailchimp's free plan as of January 2026 [Source: Mailchimp Free Plan Changes 2026](https://blog.groupmail.io/mailchimp-free-plan-changes-2026/), you'll set up a **Welcome Flow** (Mailchimp's new name for automations available on paid plans) or manually send a welcome email after launch. For now, you can:
+### Step 7: Welcome email, sent weekly by hand on Free (3 min setup, 5 min/week)
+The Free plan has no automations (verified 2026-09-28 on [Mailchimp's pricing page](https://mailchimp.com/help/about-mailchimp-pricing-plans/)), so the welcome email goes out as a weekly manual campaign. New signups already see their referral link on the page right after joining, so nothing breaks in the meantime.
 
-- [ ] Go to **Flows** or **Automations** (if available on your plan).
-- [ ] Create a new Journey triggered by **Signs up** or **Joins audience**.
-- [ ] Add a step to **Send email** and use this template:
+One-time setup:
+- [ ] Audience → **Segments** → create a segment: *Date added* is *within the last 7 days* **and** *Tags* contains `waitlist`. Name it `New this week`.
+- [ ] Create an email campaign from the draft below and save it as a **template** ("Ascend Welcome").
+
+Every Sunday (add it to your weekly review):
+- [ ] Campaigns → Create → Email → recipients: the `New this week` segment → template "Ascend Welcome" → Send.
+- [ ] Glance at your contact count. If it's 200 or more, upgrade to Essentials and turn this into an automatic welcome journey (trigger: *Signs up / joins audience*).
 
 ---
 
 ### Welcome Email Draft
 
-**Subject:** Your Ascend access is ready (Founding Cohort)
+**Subject:** You're in the Ascend Founding Cohort
 
 **Body:**
 
 ```
-Hi,
+You're in.
 
-You're in. You've joined the Founding Cohort, and Pro is yours—free, for as long as you're building with us.
+You've joined the Ascend Founding Cohort. That means Pro, free, and a direct
+line to me while we build the thing recruiting season should have come with.
 
-Starting now:
-• Check your dashboard at https://ascend-app-one.vercel.app/start to set up your system
-• Share your referral link: https://ascend-app-one.vercel.app/?ref=*|REFCODE|*
-  (Every friend who joins moves the whole cohort forward.)
-• Reply to this email if you hit any walls
+Three things:
+• See where it's headed. The live demo is at https://ascend-app-one.vercel.app/start
+• Bring your people. Your link: https://ascend-app-one.vercel.app/?ref=*|REFCODE|*
+  Every friend who joins moves the whole cohort forward.
+• Tell me what's breaking your week. Just hit reply. I read every one.
 
-Recruiting season doesn't wait. You're set up to not miss it.
+Recruiting season doesn't wait. Neither do we.
 
-—Drake
-Ascend
-hello@ascend.app
+Drake
+Founder, Ascend
 ```
 
 **Instructions:**
 - Paste this into your welcome email template.
-- Replace `*|REFCODE|*` with the merge tag `*|REFCODE|*` (Mailchimp will auto-fill each person's code).
-- Send this as the final confirmation email or as a separate welcome email triggered immediately after signup.
+- Leave `*|REFCODE|*` exactly as written. Mailchimp fills in each person's own code when it sends.
+- Send it with the weekly routine in Step 7 above. Don't paste it into the double opt-in confirmation email, because that email goes out before the person confirms.
 
 ---
 
@@ -336,7 +342,7 @@ Every Monday (or your preferred day):
 - [ ] If signup rate is low (<5%), check:
   - Is the form rendering? (Visit the site and try it.)
   - Are GA4 events firing? (Check Realtime.)
-  - Is Mailchimp quota hit? (Max 250 contacts on free plan—if you're near it, contacts will be rejected.)
+  - Is Mailchimp quota hit? (Free plan caps at 250 contacts; past that, Mailchimp restricts the account until you upgrade. Upgrade at 200.)
 
 ---
 
@@ -364,6 +370,6 @@ You're live. Welcome early builders.
 
 ---
 
-**Questions?** Email `hello@ascend.app` or check the [Mailchimp Help Center](https://mailchimp.com/help/), [GA4 Docs](https://support.google.com/analytics), or [Vercel Docs](https://vercel.com/docs).
+**Questions?** Check the [Mailchimp Help Center](https://mailchimp.com/help/), [GA4 Docs](https://support.google.com/analytics), or [Vercel Docs](https://vercel.com/docs).
 
 **Last updated:** 2026-09-28

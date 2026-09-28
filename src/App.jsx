@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import RouteTracker from './components/RouteTracker.jsx'
@@ -6,15 +6,18 @@ import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx'
 
-import Intro       from './screens/Intro.jsx'
-import NameCapture from './screens/NameCapture.jsx'
-import Quiz        from './screens/Quiz.jsx'
-import Reveal      from './screens/Reveal.jsx'
-import PetIntro    from './screens/PetIntro.jsx'
-import Dashboard   from './screens/Dashboard.jsx'
-import Login       from './screens/Login.jsx'
 import Landing     from './landing/Landing.jsx'
-import Privacy     from './screens/Privacy.jsx'
+
+// Everything off the landing page is code-split so first-time visitors to "/"
+// don't download the dashboard (and xlsx) just to see the waitlist.
+const Intro       = lazy(() => import('./screens/Intro.jsx'))
+const NameCapture = lazy(() => import('./screens/NameCapture.jsx'))
+const Quiz        = lazy(() => import('./screens/Quiz.jsx'))
+const Reveal      = lazy(() => import('./screens/Reveal.jsx'))
+const PetIntro    = lazy(() => import('./screens/PetIntro.jsx'))
+const Dashboard   = lazy(() => import('./screens/Dashboard.jsx'))
+const Login       = lazy(() => import('./screens/Login.jsx'))
+const Privacy     = lazy(() => import('./screens/Privacy.jsx'))
 
 // ── Onboarding flow — lives at "/start" ─────────────────────────────────────
 // Keeps the existing state-machine intact. After the quiz + reveal, the user
@@ -145,6 +148,7 @@ export default function App() {
       <RouteTracker />
       <AuthProvider>
         <ThemeProvider>
+          <Suspense fallback={<div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-dark)' }} />}>
           <Routes>
             <Route path="/"          element={<Landing />} />
             <Route path="/start"     element={<OnboardingFlow />} />
@@ -155,6 +159,7 @@ export default function App() {
             } />
             <Route path="*"          element={<Navigate to="/" replace />} />
           </Routes>
+          </Suspense>
         </ThemeProvider>
       </AuthProvider>
       <Analytics />

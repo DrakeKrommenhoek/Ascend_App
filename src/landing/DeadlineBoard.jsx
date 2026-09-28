@@ -75,7 +75,7 @@ export default function DeadlineBoard() {
               <span style={{
                 fontFamily: 'JetBrains Mono, monospace', fontSize: 10, letterSpacing: '0.04em',
                 padding: '3px 8px', borderRadius: 20,
-                color: rescheduled ? 'var(--lp-gold)' : 'var(--lp-ember)',
+                color: rescheduled ? 'var(--lp-gold)' : '#D4704A', // lighter ember: 5.25:1 on surface (AA)
                 border: `1px solid ${rescheduled ? 'rgba(201,168,76,0.45)' : 'rgba(180,83,42,0.5)'}`,
                 whiteSpace: 'nowrap',
               }}>

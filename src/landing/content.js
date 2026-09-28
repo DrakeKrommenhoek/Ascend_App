@@ -1,7 +1,7 @@
 // All landing-page copy lives here so layout components never hardcode text.
 // Edit this file to change what the page says without touching JSX/layout.
 
-export const CONTACT_EMAIL = 'hello@ascend.app'
+export const CONTACT_EMAIL = 'drake.krommenhoek@gmail.com'
 
 export const TRACKS = ['Investment Banking', 'Consulting', 'Private Equity', 'Tech', 'Other']
 

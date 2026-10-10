@@ -495,17 +495,6 @@ export default function Intro({ onComplete, onSkipToDemo }) {
               }}>
                 Classes. Recruiting. Life. Finally in one place.
               </p>
-              <p style={{
-                fontFamily: 'DM Sans, sans-serif',
-                fontWeight: 400,
-                fontSize: '0.75rem',
-                color: '#999',
-                letterSpacing: '0.03em',
-                margin: '16px 0 0',
-                animation: 'fade-in 400ms ease-out forwards',
-              }}>
-                🎓 117 students on early access
-              </p>
             </>
           )}
         </div>
